@@ -7,7 +7,7 @@ export function getGoogleAuthClient() {
   return new google.auth.OAuth2({
     clientId: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
-    redirectUri: "http://localhost:3000/api/auth/google/callback",
+    redirectUri: `${env.DOMAIN}/auth/google/callback`,
   });
 }
 export const authUrlConfig = {
