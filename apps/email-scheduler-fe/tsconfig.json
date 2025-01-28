@@ -20,7 +20,11 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "paths": {
+      "@/*": ["apps/email-scheduler-fe/src/*"],
+      "@email-scheduler/ui": ["libs/ui/src/index.ts"]
+    }
   },
   "include": [
     "**/*.ts",
@@ -29,7 +33,8 @@
     "**/*.jsx",
     "../../apps/email-scheduler-fe/.next/types/**/*.ts",
     "../../dist/apps/email-scheduler-fe/.next/types/**/*.ts",
-    "next-env.d.ts"
+    "next-env.d.ts",
+    ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules", "jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
 }

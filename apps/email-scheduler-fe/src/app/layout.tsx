@@ -1,4 +1,4 @@
-import './global.css';
+import '../../../../libs/tailwind/global.css';
 
 export const metadata = {
   title: 'Welcome to email-scheduler-fe',
