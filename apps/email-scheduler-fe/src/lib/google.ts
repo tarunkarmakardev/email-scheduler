@@ -1,3 +1,4 @@
+import "server-only";
 import { getEnv } from "@/lib/env";
 import { google, Auth } from "googleapis";
 
@@ -7,7 +8,7 @@ export function getGoogleAuthClient() {
   return new google.auth.OAuth2({
     clientId: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
-    redirectUri: `${env.DOMAIN}/auth/google/callback`,
+    redirectUri: `${env.DOMAIN}/api/auth/google/callback`,
   });
 }
 export const authUrlConfig = {

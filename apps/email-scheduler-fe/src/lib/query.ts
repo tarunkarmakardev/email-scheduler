@@ -1,3 +1,4 @@
+import "server-only";
 import { getEnv } from "./env";
 
 export type QueryOptions = {
