@@ -1,15 +1,21 @@
+import TemplateCard from "@/features/template-card";
 import { query } from "@/lib/query";
 import { EmailTemplateGetData } from "@/schemas/email-templates";
 
 export default async function Page() {
-  const {
-    res: { results },
-  } = await query<EmailTemplateGetData>("/api/emails/templates");
-
+  const { res } = await query<EmailTemplateGetData>("/api/emails/templates");
+  if (!res) return <div>Error</div>;
+  const { results } = res;
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {results.map((r) => (
-        <div key={r.id}>{r.name}</div>
+        <TemplateCard
+          key={r.id}
+          id={r.id}
+          name={r.name}
+          subject={r.subject}
+          body={r.body}
+        />
       ))}
     </div>
   );

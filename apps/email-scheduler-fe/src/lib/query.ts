@@ -9,21 +9,35 @@ export type QueryOptions = {
 };
 const env = getEnv();
 export async function query<T = unknown>(url: string, options?: QueryOptions) {
-  const token = await cookies().get("token")?.value;
-  const req = await fetch(`${env.DOMAIN}${url}`, {
-    method: options?.method ?? "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-      ...options?.headers,
-    },
-    body: options?.body,
-    cache: "no-store",
-  });
-  const res = (await req.json()) as T;
-  return {
-    res,
-    status: req.status,
-    statusText: req.statusText,
-  };
+  let status = 200;
+  let statusText = "OK";
+  try {
+    const token = await cookies().get("token")?.value;
+    const req = await fetch(`${env.DOMAIN}${url}`, {
+      method: options?.method ?? "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        ...options?.headers,
+      },
+      body: options?.body,
+      cache: "no-store",
+    });
+    status = req.status;
+    statusText = req.statusText;
+    const res = (await req.json()) as T;
+    return {
+      res,
+      status,
+      statusText,
+    };
+  } catch (error) {
+    const e = error instanceof Error ? error : new Error("Unknown Error");
+    return {
+      res: null,
+      error: e.message,
+      status,
+      statusText,
+    };
+  }
 }
