@@ -10,7 +10,7 @@ export const EmailTemplateSchema = z.object({
   userId: z.string(),
 });
 
-export const EmailGetPayloadSchema = z.object({
+export const EmailTemplateGetPayloadSchema = z.object({
   limit: z.number().optional(),
   offset: z.number().optional(),
   sortBy: z.string().optional(),
@@ -18,7 +18,7 @@ export const EmailGetPayloadSchema = z.object({
   search: z.string().optional(),
 });
 
-export const EmailGetDataSchema = z.object({
+export const EmailTemplateGetDataSchema = z.object({
   results: z.array(EmailTemplateSchema),
   total: z.number(),
 });
@@ -40,6 +40,10 @@ export const EmailTemplateUpdatePayloadSchema = EmailTemplateSchema.pick({
 export const EmailTemplateDeletePayloadSchema = EmailTemplateSchema.pick({
   id: true,
 });
+export const EmailTemplateDetailPayloadSchema = EmailTemplateSchema.pick({
+  id: true,
+});
+export const EmailTemplateDetailDataSchema = EmailTemplateSchema;
 
 export type EmailTemplateCreatePayload = z.infer<
   typeof EmailTemplateCreatePayloadSchema
@@ -51,5 +55,13 @@ export type EmailTemplateDeletePayload = z.infer<
   typeof EmailTemplateDeletePayloadSchema
 >;
 export type EmailTemplate = z.infer<typeof EmailTemplateSchema>;
-export type EmailTemplateGetPayload = z.infer<typeof EmailGetPayloadSchema>;
-export type EmailTemplateGetData = z.infer<typeof EmailGetDataSchema>;
+export type EmailTemplateGetPayload = z.infer<
+  typeof EmailTemplateGetPayloadSchema
+>;
+export type EmailTemplateGetData = z.infer<typeof EmailTemplateGetDataSchema>;
+export type EmailTemplateDetailPayload = z.infer<
+  typeof EmailTemplateDetailPayloadSchema
+>;
+export type EmailTemplateDetailData = z.infer<
+  typeof EmailTemplateDetailDataSchema
+>;
