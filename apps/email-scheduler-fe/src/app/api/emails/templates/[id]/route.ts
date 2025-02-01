@@ -6,6 +6,19 @@ import {
 } from "@/schemas/email-templates";
 import { NextResponse } from "next/server";
 
+export const GET = createRouteHandler(
+  async (request, userId, { params }: { params: Promise<{ id: string }> }) => {
+    const id = (await params).id;
+    const result = await db().emailTemplate.findUnique({
+      where: {
+        id,
+        userId,
+      },
+    });
+    return NextResponse.json(result);
+  }
+);
+
 export const PATCH = createRouteHandler(
   async (request, userId, { params }: { params: Promise<{ id: string }> }) => {
     const data = await request.json();
