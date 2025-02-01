@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyIsAuthenticated } from "@/lib/auth";
+import { getAuthUserId } from "@/lib/auth";
 
 const publicRoutes = ["/auth/sign-in", "/auth/sign-up", "/"];
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = !publicRoutes.includes(path);
-  const userId = await verifyIsAuthenticated(req);
+  const userId = await getAuthUserId(req);
 
   if (isProtectedRoute && !userId) {
     return NextResponse.redirect(new URL("/auth/sign-in", req.nextUrl));

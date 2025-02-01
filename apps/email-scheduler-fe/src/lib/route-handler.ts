@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
-import { verifyIsAuthenticated } from "./auth";
+import { getAuthUserId } from "./auth";
 
 export function createRouteHandler<T>(
   handler: (
@@ -9,7 +9,7 @@ export function createRouteHandler<T>(
   ) => Promise<NextResponse<T>> | NextResponse<T>
 ) {
   return async (request: NextRequest) => {
-    const userId = await verifyIsAuthenticated(request);
+    const userId = await getAuthUserId(request);
     if (!userId) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }

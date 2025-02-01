@@ -2,9 +2,10 @@ import "server-only";
 import * as jose from "jose";
 import { getEnv } from "./env";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 const env = getEnv();
+const SECRET = new TextEncoder().encode(env.SECRET);
 
 export function generateAuthToken(user: { id: string }, expiresAt: Date) {
   return new jose.SignJWT({
@@ -13,11 +14,11 @@ export function generateAuthToken(user: { id: string }, expiresAt: Date) {
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime(expiresAt)
-    .sign(new TextEncoder().encode(env.SECRET));
+    .sign(SECRET);
 }
 
 export function verifyAuthToken(token: string) {
-  return jose.jwtVerify(token, new TextEncoder().encode(env.SECRET));
+  return jose.jwtVerify(token, SECRET);
 }
 
 export async function createSession(user: { id: string }) {
@@ -26,40 +27,33 @@ export async function createSession(user: { id: string }) {
   const cookieStore = cookies();
   cookieStore.set("token", token, {
     httpOnly: true,
-    secure: true,
+    secure: false,
     expires: expiresAt,
     sameSite: "lax",
     path: "/",
   });
 }
-export async function verifyIsAuthenticated(request: Request) {
+export async function getAuthCookie(req: NextRequest) {
   try {
-    const cookieStore = cookies();
-    const token = cookieStore.get("token");
+    const token =
+      req.cookies.get("token")?.value ||
+      req.headers.get("Authorization")?.split(" ")[1];
     if (!token) return null;
-    const { payload } = await verifyAuthToken(token.value);
-    return payload.id as string;
+    return token as string;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return null;
   }
 }
 
+export async function getAuthUserId(req: NextRequest) {
+  const token = await getAuthCookie(req);
+  if (!token) return null;
+  const { payload } = await verifyAuthToken(token);
+  return payload.id as string;
+}
+
 export async function signOut() {
   const cookieStore = cookies();
   cookieStore.delete("token");
-}
-
-export function createProtectedRouteHandler<T>(
-  handler: (
-    request: NextRequest,
-    userId: string
-  ) => Promise<NextResponse<T>> | NextResponse<T>
-) {
-  return async (request: NextRequest) => {
-    const userId = await verifyIsAuthenticated(request);
-    if (!userId) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-    return await handler(request, userId);
-  };
 }
