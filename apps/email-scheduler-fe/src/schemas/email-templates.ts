@@ -28,8 +28,27 @@ export const EmailTemplateCreatePayloadSchema = EmailTemplateSchema.pick({
   name: true,
   subject: true,
 });
+export const EmailTemplateUpdatePayloadSchema = EmailTemplateSchema.pick({
+  id: true,
+  body: true,
+  name: true,
+  subject: true,
+})
+  .partial()
+  .required({ id: true });
+
+export const EmailTemplateDeletePayloadSchema = EmailTemplateSchema.pick({
+  id: true,
+});
+
 export type EmailTemplateCreatePayload = z.infer<
   typeof EmailTemplateCreatePayloadSchema
+>;
+export type EmailTemplateUpdatePayload = z.infer<
+  typeof EmailTemplateUpdatePayloadSchema
+>;
+export type EmailTemplateDeletePayload = z.infer<
+  typeof EmailTemplateDeletePayloadSchema
 >;
 export type EmailTemplate = z.infer<typeof EmailTemplateSchema>;
 export type EmailTemplateGetPayload = z.infer<typeof EmailGetPayloadSchema>;
