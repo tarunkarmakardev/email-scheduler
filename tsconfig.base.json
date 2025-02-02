@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@email-scheduler/ui": ["libs/ui/src/index.ts"]
+      "@email-scheduler/ui": ["libs/ui/src/index.ts"],
+      "@email-scheduler/utils": ["libs/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
