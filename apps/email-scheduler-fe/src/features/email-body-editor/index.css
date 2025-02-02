@@ -1,3 +1,27 @@
-.editor .ql-container {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.editor.editor.editor .ql-container {
   height: calc(100% - 44px);
+  border: none;
+  color: hsl(var(--foreground));
+}
+.editor.quill {
+  border: 1px solid;
+  border-color: hsl(var(--input));
+  border-radius: calc(var(--radius) - 2px);
+}
+.editor.editor.editor .ql-toolbar {
+  border: none;
+}
+.editor.editor.editor .ql-stroke {
+  stroke: hsl(var(--foreground));
+}
+.editor.editor.editor .ql-picker {
+  color: hsl(var(--foreground));
+}
+.editor.editor.editor .ql-picker .ql-picker-options {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
 }
