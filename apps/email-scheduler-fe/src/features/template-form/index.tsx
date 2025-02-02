@@ -17,14 +17,17 @@ import {
   FormMessage,
   Input,
 } from "@email-scheduler/ui";
+import { Loader2 } from "lucide-react";
 
 type TemplateFormProps = {
+  loading?: boolean;
   template: EmailTemplateDetailData;
   onSubmit: (data: EmailTemplateFormValues) => void;
 };
 export default function TemplateForm({
   template,
   onSubmit,
+  loading,
 }: TemplateFormProps) {
   const form = useForm({
     resolver: zodResolver(EmailTemplateFormValuesSchema),
@@ -84,7 +87,10 @@ export default function TemplateForm({
             </FormItem>
           )}
         />
-        <Button type="submit">Update</Button>
+        <Button disabled={!form.formState.isValid || loading} type="submit">
+          {loading && <Loader2 className="animate-spin" />}
+          Update
+        </Button>
       </form>
     </Form>
   );
