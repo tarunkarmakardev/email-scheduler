@@ -4,6 +4,12 @@ export type Env = {
   DOMAIN: string;
   SECRET: string;
 };
+export type ClientEnv = object;
+
 export function getEnv() {
   return process.env as unknown as Env;
+}
+
+export function getClientEnv() {
+  return process.env as unknown as ClientEnv;
 }
