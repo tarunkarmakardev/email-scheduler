@@ -14,3 +14,4 @@ export * from "./lib/table";
 export * from "./lib/tool-tip";
 export * from "./lib/separator";
 export * from "./lib/tabs";
+export * from "./lib/switch";
