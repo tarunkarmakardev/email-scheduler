@@ -1,4 +1,5 @@
 import ReactQuill from "react-quill";
+import "./index.css";
 import "react-quill/dist/quill.snow.css";
 
 type EmailBodyEditorProps = {
@@ -10,5 +11,12 @@ export default function EmailBodyEditor({
   value,
   onChange,
 }: EmailBodyEditorProps) {
-  return <ReactQuill theme="snow" value={value} onChange={onChange} />;
+  return (
+    <ReactQuill
+      theme="snow"
+      value={value}
+      onChange={onChange}
+      className={`h-[300px] block editor`}
+    />
+  );
 }
