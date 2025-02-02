@@ -5,5 +5,12 @@
   "projectType": "application",
   "tags": [],
   "// targets": "to see all targets run: nx show project email-scheduler-fe --web",
-  "targets": {}
+  "targets": {
+    "ts-lint": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "tsc --noEmit --project apps/email-scheduler-fe/tsconfig.json"
+      }
+    }
+  }
 }

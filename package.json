@@ -2,7 +2,10 @@
   "name": "@email-scheduler/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "lint-all": "nx run-many -t lint --all",
+    "ts-lint-all": "nx run-many -t ts-lint --all"
+  },
   "private": true,
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
