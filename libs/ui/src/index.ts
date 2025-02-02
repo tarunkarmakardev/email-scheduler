@@ -19,3 +19,4 @@ export * from "./lib/sheet";
 export * from "./lib/toast";
 export * from "./lib/sidebar";
 export * from "./lib/dropdown-menu";
+export * from "./lib/theme-provider";
