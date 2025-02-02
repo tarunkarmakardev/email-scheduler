@@ -4,9 +4,19 @@ import {
   EmailTemplateFormValues,
   EmailTemplateFormValuesSchema,
 } from "@/schemas/email-templates";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import EmailBodyEditor from "../email-body-editor";
+import {
+  Button,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Input,
+} from "@email-scheduler/ui";
 
 type TemplateFormProps = {
   template: EmailTemplateDetailData;
@@ -16,12 +26,7 @@ export default function TemplateForm({
   template,
   onSubmit,
 }: TemplateFormProps) {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    control,
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(EmailTemplateFormValuesSchema),
     defaultValues: {
       body: "",
@@ -35,37 +40,52 @@ export default function TemplateForm({
     },
   });
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <label className="block mb-2 text-sm text-slate-600">Name</label>
-        <input
-          {...register("name")}
-          placeholder="Name"
-          className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-        />
-        <p>{errors.name?.message}</p>
-        <label className="block mb-2 text-sm text-slate-600">Subject</label>
-        <input
-          {...register("subject")}
-          placeholder="Subject"
-          className="w-full bg-transparent placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded-md px-3 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-300 shadow-sm focus:shadow"
-        />
-        <p>{errors.subject?.message}</p>
-        <label className="block mb-2 text-sm text-slate-600">Body</label>
-        <Controller
-          name="body"
-          control={control}
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+          control={form.control}
+          name="name"
           render={({ field }) => (
-            <EmailBodyEditor value={field.value} onChange={field.onChange} />
+            <FormItem>
+              <FormLabel>Template Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
-        <button
-          className="bg-primary w-[100px] text-white px-2 py-1 rounded-md"
-          type="submit"
-        >
-          Update
-        </button>
+        <FormField
+          control={form.control}
+          name="subject"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Subject</FormLabel>
+              <FormControl>
+                <Input placeholder="Subject" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="body"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Body</FormLabel>
+              <FormControl>
+                <EmailBodyEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Update</Button>
       </form>
-    </div>
+    </Form>
   );
 }
