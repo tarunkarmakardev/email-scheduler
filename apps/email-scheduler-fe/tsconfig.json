@@ -24,7 +24,8 @@
     "paths": {
       "@/*": ["apps/email-scheduler-fe/src/*"],
       "@email-scheduler/ui": ["libs/ui/src/index.ts"],
-      "@email-scheduler/utils": ["libs/utils/src/index.ts"]
+      "@email-scheduler/utils": ["libs/utils/src/index.ts"],
+      "@email-scheduler/hooks": ["libs/hooks/src/index.ts"]
     }
   },
   "include": [
