@@ -7,3 +7,4 @@ export * from "./lib/skeleton";
 export * from "./lib/text-area";
 export * from "./lib/checkbox";
 export * from "./lib/dialog";
+export * from "./lib/command";
