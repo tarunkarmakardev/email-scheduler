@@ -1,5 +1,6 @@
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import "../../../../libs/tailwind/global.css";
+import TopBar from "@/features/top-bar";
 import Providers from "@/features/providers";
 
 export const metadata = {
@@ -14,11 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50">
+      <body>
         <Providers>
-          <header className="bg-primary shadow-md p-4">
-            <div className="font-bold text-3xl text-white">Email Scheduler</div>
-          </header>
+          <TopBar />
           <main className="p-6">{children}</main>
         </Providers>
       </body>
