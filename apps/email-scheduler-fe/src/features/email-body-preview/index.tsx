@@ -1,5 +1,5 @@
 "use client";
-import DOMPurify from "isomorphic-dompurify";
+import parse from "html-react-parser";
 
 type EmailBodyPreviewProps = {
   content: string;
@@ -7,15 +7,7 @@ type EmailBodyPreviewProps = {
 
 export default function EmailBodyPreview({ content }: EmailBodyPreviewProps) {
   if (!content) return <div />;
-  const htmlContent = DOMPurify.sanitize(content, {
-    USE_PROFILES: { html: true },
-    WHOLE_DOCUMENT: true,
-  });
   return (
-    <iframe
-      title="Email Preview"
-      srcDoc={htmlContent}
-      style={{ height: "100%", width: "100%", overflow: "auto" }}
-    />
+    <div className="h-full w-full overflow-auto text-sm">{parse(content)}</div>
   );
 }
