@@ -2,6 +2,7 @@
 import "../../../../libs/tailwind/global.css";
 import TopBar from "@/features/top-bar";
 import Providers from "@/features/providers";
+import { Toaster } from "@email-scheduler/ui";
 
 export const metadata = {
   title: "Welcome to email-scheduler-fe",
@@ -19,6 +20,7 @@ export default function RootLayout({
         <Providers>
           <TopBar />
           <main className="p-6">{children}</main>
+          <Toaster />
         </Providers>
       </body>
     </html>
