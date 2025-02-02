@@ -17,3 +17,4 @@ export * from "./lib/tabs";
 export * from "./lib/switch";
 export * from "./lib/sheet";
 export * from "./lib/toast";
+export * from "./lib/sidebar";
