@@ -11,3 +11,4 @@ export * from "./lib/command";
 export * from "./lib/popover";
 export * from "./lib/pagination";
 export * from "./lib/table";
+export * from "./lib/tool-tip";
