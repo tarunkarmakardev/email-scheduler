@@ -16,6 +16,8 @@ model User {
   password       String?
   googleToken    Json?
   EmailTemplates EmailTemplate[]
+  Campaigns      Campaign[]
+  Customer       Customer[]
 }
 
 model EmailTemplate {
@@ -27,4 +29,26 @@ model EmailTemplate {
   updatedAt DateTime @updatedAt
   userId    String
   User      User     @relation(fields: [userId], references: [id])
+}
+
+model Campaign {
+  id        String     @id @default(uuid())
+  name      String
+  Customers Customer[]
+  User      User       @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Customer {
+  id        String     @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String
+  Campaigns Campaign[]
+  User      User       @relation(fields: [userId], references: [id])
+  userId    String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
