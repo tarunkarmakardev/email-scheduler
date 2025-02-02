@@ -1,5 +1,13 @@
 import Link from "next/link";
 import EmailBodyPreview from "../email-body-preview";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@email-scheduler/ui";
 
 type TemplateCardProps = {
   id: string;
@@ -15,24 +23,24 @@ export default function TemplateCard({
   subject,
 }: TemplateCardProps) {
   return (
-    <div className="bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-semibold border-b border-gray-200 p-2 capitalize">
-        {name}
-      </h2>
-      <div className="py-4 px-2">
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-2xl capitalize">{name}</CardTitle>
+      </CardHeader>
+      <CardContent>
         <div className="flex gap-2 mb-4">
           <p className="font-semibold">Subject:</p>
           <p>{subject}</p>
         </div>
-        <p className="h-[200px]">
+        <p className="h-[140px]">
           <EmailBodyPreview content={body} />
         </p>
-        <div className="flex justify-end gap-2">
-          <EditTemplate id={id} />
-          <DeleteTemplate />
-        </div>
-      </div>
-    </div>
+      </CardContent>
+      <CardFooter className="flex gap-2">
+        <EditTemplate id={id} />
+        <DeleteTemplate />
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -40,9 +48,7 @@ function EditTemplate({ id }: { id: string }) {
   return (
     <div>
       <Link href={`/emails/templates/edit/${id}`}>
-        <button className="bg-primary text-white px-2 py-1 rounded-sm w-28">
-          Edit
-        </button>
+        <Button>Edit</Button>
       </Link>
     </div>
   );
@@ -51,9 +57,7 @@ function EditTemplate({ id }: { id: string }) {
 function DeleteTemplate() {
   return (
     <div>
-      <button className="bg-red-600 text-white px-2 py-1 rounded-sm w-28">
-        Delete
-      </button>
+      <Button variant="destructive">Delete</Button>
     </div>
   );
 }
