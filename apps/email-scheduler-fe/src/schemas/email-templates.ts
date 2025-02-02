@@ -37,6 +37,12 @@ export const EmailTemplateUpdatePayloadSchema = EmailTemplateSchema.pick({
   .partial()
   .required({ id: true });
 
+export const EmailTemplateFormValuesSchema = EmailTemplateSchema.pick({
+  body: true,
+  name: true,
+  subject: true,
+});
+
 export const EmailTemplateDeletePayloadSchema = EmailTemplateSchema.pick({
   id: true,
 });
@@ -45,6 +51,9 @@ export const EmailTemplateDetailPayloadSchema = EmailTemplateSchema.pick({
 });
 export const EmailTemplateDetailDataSchema = EmailTemplateSchema;
 
+export type EmailTemplateFormValues = z.infer<
+  typeof EmailTemplateFormValuesSchema
+>;
 export type EmailTemplateCreatePayload = z.infer<
   typeof EmailTemplateCreatePayloadSchema
 >;
