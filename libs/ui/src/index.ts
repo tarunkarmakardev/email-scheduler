@@ -16,3 +16,4 @@ export * from "./lib/separator";
 export * from "./lib/tabs";
 export * from "./lib/switch";
 export * from "./lib/sheet";
+export * from "./lib/toast";
