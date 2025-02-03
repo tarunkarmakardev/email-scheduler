@@ -31,4 +31,32 @@ export async function seedDb(request: NextRequest, userId: string) {
       userId,
     })),
   });
+  await db().campaign.deleteMany({
+    where: {
+      userId,
+    },
+  });
+  const campaigns = Array.from({ length: 10 }).map(() => ({
+    name: faker.company.name(),
+    userId,
+    customers: Array.from({ length: 10 }).map(() => ({
+      firstName: faker.person.firstName(),
+      lastName: faker.person.lastName(),
+      email: faker.internet.email(),
+    })),
+  }));
+  for (const campaign of campaigns) {
+    await db().campaign.create({
+      data: {
+        ...campaign,
+        userId,
+        customers: {
+          create: campaign.customers.map((customer) => ({
+            ...customer,
+            userId,
+          })),
+        },
+      },
+    });
+  }
 }

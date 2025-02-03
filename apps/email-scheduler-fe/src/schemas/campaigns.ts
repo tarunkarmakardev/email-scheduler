@@ -7,7 +7,7 @@ export const CampaignSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().optional(),
   userId: z.string(),
-  Customers: z.array(CustomerSchema),
+  customers: z.array(CustomerSchema),
 });
 
 export const CampaignGetPayloadSchema = z.object({
@@ -35,7 +35,7 @@ export const CampaignUpdatePayloadSchema = CampaignSchema.pick({
 export const CampaignFormValuesSchema = CampaignSchema.pick({
   name: true,
 }).extend({
-  Customers: z.array(CustomerCreatePayloadSchema),
+  customers: z.array(CustomerCreatePayloadSchema),
 });
 
 export type Campaign = z.infer<typeof CampaignSchema>;
