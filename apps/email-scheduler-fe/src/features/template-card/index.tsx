@@ -1,13 +1,13 @@
-import Link from "next/link";
 import EmailBodyPreview from "../email-body-preview";
 import {
-  Button,
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@email-scheduler/ui";
+import { EditTemplateButton } from "../edit-template";
+import { DeleteTemplateButton } from "../delete-template";
 
 type TemplateCardProps = {
   id: string;
@@ -37,27 +37,9 @@ export default function TemplateCard({
         </p>
       </CardContent>
       <CardFooter className="flex gap-2">
-        <EditTemplate id={id} />
-        <DeleteTemplate />
+        <EditTemplateButton id={id} />
+        <DeleteTemplateButton id={id} />
       </CardFooter>
     </Card>
-  );
-}
-
-function EditTemplate({ id }: { id: string }) {
-  return (
-    <div>
-      <Link href={`/emails/templates/edit/${id}`}>
-        <Button>Edit</Button>
-      </Link>
-    </div>
-  );
-}
-
-function DeleteTemplate() {
-  return (
-    <div>
-      <Button variant="destructive">Delete</Button>
-    </div>
   );
 }

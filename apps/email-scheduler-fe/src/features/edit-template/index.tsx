@@ -6,7 +6,9 @@ import {
 } from "@/schemas/email-templates";
 import { api } from "@/lib/axios";
 import TemplateForm from "../template-form";
-import { useToast } from "@email-scheduler/ui";
+import { Button, useToast } from "@email-scheduler/ui";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 type EditTemplateProps = {
   template: EmailTemplateDetailData;
@@ -14,25 +16,38 @@ type EditTemplateProps = {
 
 export default function EditTemplate({ template }: EditTemplateProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const templatePatchMutation = useMutation({
     mutationFn: async (values: EmailTemplateFormValues) => {
       const res = await api.patch(`/emails/templates/${template.id}`, values);
       return res.data;
     },
   });
+  const handleSubmit = (values: EmailTemplateFormValues) => {
+    templatePatchMutation.mutate(values, {
+      onSuccess: () => {
+        toast({
+          title: "Template Updated",
+        });
+        router.push("/emails/templates/list");
+      },
+    });
+  };
   return (
     <TemplateForm
       loading={templatePatchMutation.isPending}
       template={template}
-      onSubmit={(values) =>
-        templatePatchMutation.mutate(values, {
-          onSuccess: () => {
-            toast({
-              title: "Template Updated",
-            });
-          },
-        })
-      }
+      onSubmit={handleSubmit}
     />
+  );
+}
+
+export function EditTemplateButton({ id }: { id: string }) {
+  return (
+    <div>
+      <Link href={`/emails/templates/edit/${id}`}>
+        <Button>Edit</Button>
+      </Link>
+    </div>
   );
 }
