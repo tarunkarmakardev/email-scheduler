@@ -28,14 +28,14 @@ model EmailTemplate {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String
-  User      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 }
 
 model Campaign {
   id        String     @id @default(uuid())
   name      String
-  Customers Customer[]
-  User      User       @relation(fields: [userId], references: [id])
+  customers Customer[]
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
@@ -46,8 +46,8 @@ model Customer {
   firstName String
   lastName  String
   email     String
-  Campaigns Campaign[]
-  User      User       @relation(fields: [userId], references: [id])
+  campaigns Campaign[]
+  user      User       @relation(fields: [userId], references: [id])
   userId    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
