@@ -8,6 +8,7 @@ import {
 } from "@email-scheduler/ui";
 import { EditTemplateButton } from "../edit-template";
 import { DeleteTemplateButton } from "../delete-template";
+import SendEmailButton from "../send-email-button";
 
 type TemplateCardProps = {
   id: string;
@@ -37,6 +38,7 @@ export default function TemplateCard({
         </p>
       </CardContent>
       <CardFooter className="flex gap-2">
+        <SendEmailButton id={id} />
         <EditTemplateButton id={id} />
         <DeleteTemplateButton id={id} />
       </CardFooter>
