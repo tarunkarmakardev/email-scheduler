@@ -22,6 +22,10 @@ export const CampaignGetDataSchema = z.object({
   results: z.array(CampaignSchema),
   total: z.number(),
 });
+export const CampaignDetailPayloadSchema = z.object({
+  id: z.string().uuid(),
+});
+export const CampaignDetailDataSchema = CampaignSchema;
 export const CampaignCreatePayloadSchema = CampaignSchema.pick({
   name: true,
 });
@@ -41,6 +45,8 @@ export const CampaignFormValuesSchema = CampaignSchema.pick({
 export type Campaign = z.infer<typeof CampaignSchema>;
 export type CampaignGetPayload = z.infer<typeof CampaignGetPayloadSchema>;
 export type CampaignGetData = z.infer<typeof CampaignGetDataSchema>;
+export type CampaignDetailPayload = z.infer<typeof CampaignDetailPayloadSchema>;
+export type CampaignDetailData = z.infer<typeof CampaignDetailDataSchema>;
 export type CampaignCreatePayload = z.infer<typeof CampaignCreatePayloadSchema>;
 export type CampaignUpdatePayload = z.infer<typeof CampaignUpdatePayloadSchema>;
 export type CampaignFormValues = z.infer<typeof CampaignFormValuesSchema>;
