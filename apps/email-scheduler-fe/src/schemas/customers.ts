@@ -11,6 +11,7 @@ export const CustomerSchema = z.object({
 });
 
 export const CustomerGetPayloadSchema = z.object({
+  campaignId: z.string().optional(),
   limit: z.number().optional(),
   offset: z.number().optional(),
   sortBy: z.string().optional(),
