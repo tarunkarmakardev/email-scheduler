@@ -1,14 +1,15 @@
-import { query } from "@/lib/query";
+import { apiEndpoints } from "@/config";
+import QueryContainer from "@/features/query-container";
 import { GoogleAuthResponse } from "@/schemas/google";
 
 export default async function Page() {
-  const { res } = await query<GoogleAuthResponse>("/api/auth/google");
-  if (!res) return <div>Error</div>;
   return (
-    <div>
-      <a href={res.authUrl} className="underline text-blue-400">
-        Sign in With Google
-      </a>
-    </div>
+    <QueryContainer<GoogleAuthResponse> url={apiEndpoints.googleAuth}>
+      {(res) => (
+        <a href={res.data.authUrl} className="underline text-blue-400">
+          Sign in With Google
+        </a>
+      )}
+    </QueryContainer>
   );
 }

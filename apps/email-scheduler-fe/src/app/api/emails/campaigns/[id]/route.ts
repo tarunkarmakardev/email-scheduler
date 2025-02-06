@@ -28,3 +28,13 @@ export const DELETE = createRouteHandler(
     return NextResponse.json(campaign);
   }
 );
+
+export const GET = createRouteHandler(
+  async (req, userId, { params }: { params: Promise<{ id: string }> }) => {
+    const { id } = await params;
+    const campaign = await db().campaign.findUnique({
+      where: { id, userId },
+    });
+    return NextResponse.json(campaign);
+  }
+);

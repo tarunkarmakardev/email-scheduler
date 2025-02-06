@@ -1,5 +1,6 @@
+import { apiEndpoints } from "@/config";
 import EditTemplate from "@/features/edit-template";
-import { query } from "@/lib/query";
+import QueryContainer from "@/features/query-container";
 import { EmailTemplateDetailData } from "@/schemas/email-templates";
 
 export default async function Page({
@@ -8,14 +9,15 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const { res } = await query<EmailTemplateDetailData>(
-    `/api/emails/templates/${id}`
-  );
-  if (!res) return <div>Error</div>;
   return (
-    <div>
-      <EditTemplate template={res} />
-    </div>
+    <QueryContainer<EmailTemplateDetailData>
+      url={apiEndpoints.templateDetail}
+      options={{
+        pathParams: { id },
+      }}
+    >
+      {(res) => <EditTemplate template={res.data} />}
+    </QueryContainer>
   );
 }
 
