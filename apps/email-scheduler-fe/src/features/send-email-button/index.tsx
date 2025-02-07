@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function SendEmailButton({ id }: { id: string }) {
   return (
     <Link href={`/emails/templates/${id}/send-email`}>
-      <Button variant="outline">
+      <Button>
         <Mail />
         Send Email
       </Button>

@@ -46,7 +46,7 @@ export function EditTemplateButton({ id }: { id: string }) {
   return (
     <div>
       <Link href={`/emails/templates/edit/${id}`}>
-        <Button>Edit</Button>
+        <Button variant="outline">Edit</Button>
       </Link>
     </div>
   );
