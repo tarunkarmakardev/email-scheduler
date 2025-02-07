@@ -21,3 +21,4 @@ export * from "./lib/sidebar";
 export * from "./lib/dropdown-menu";
 export * from "./lib/theme-provider";
 export * from "./lib/select";
+export * from "./lib/badge";
