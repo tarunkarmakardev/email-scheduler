@@ -107,7 +107,7 @@ export function MultiSelect({
             onValueChange={setInputValue}
             placeholder={placeholder}
             showSearchIcon={false}
-            className="bg-transparent outline-none placeholder:text-muted-foreground py-0 h-6"
+            className="bg-transparent outline-none placeholder:text-muted-foreground py-0 h-6 min-w-24"
             containerClassName="border-b-0 px-0 flex-1"
           />
         </div>
