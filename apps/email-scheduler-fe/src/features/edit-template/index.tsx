@@ -9,6 +9,7 @@ import TemplateForm from "../template-form";
 import { Button, useToast } from "@email-scheduler/ui";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { apiEndpoints } from "@/config";
 
 type EditTemplateProps = {
   template: EmailTemplateDetailData;
@@ -19,7 +20,10 @@ export default function EditTemplate({ template }: EditTemplateProps) {
   const router = useRouter();
   const templatePatchMutation = useMutation({
     mutationFn: async (values: EmailTemplateFormValues) => {
-      const res = await api.patch(`/emails/templates/${template.id}`, values);
+      const res = await api.patch(
+        apiEndpoints.templateDetail(template.id),
+        values
+      );
       return res.data;
     },
   });
