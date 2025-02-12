@@ -23,3 +23,5 @@ export * from "./lib/theme-provider";
 export * from "./lib/select";
 export * from "./lib/badge";
 export * from "./lib/multi-select";
+export * from "./lib/collapsible";
+export * from "./lib/avatar";
