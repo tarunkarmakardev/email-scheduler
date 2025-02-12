@@ -8,7 +8,7 @@ export default async function Page() {
     <QueryContainer<CampaignGetData> url={apiEndpoints.campaigns}>
       {(res) => (
         <div className="flex flex-col gap-4">
-          {res.data.results.map((camp) => (
+          {res.result.items.map((camp) => (
             <CampaignCard key={camp.id} campaign={camp} />
           ))}
         </div>

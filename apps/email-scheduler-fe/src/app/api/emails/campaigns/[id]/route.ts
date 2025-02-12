@@ -1,40 +1,43 @@
 import { db } from "@/lib/db";
-import { createRouteHandler } from "@/lib/route-handler";
-import { CampaignCreatePayloadSchema } from "@/schemas/campaigns";
-import { NextResponse } from "next/server";
+import { ApiError, ApiResponse, createRouteHandler } from "@/lib/route-handler";
+import {
+  CampaignUpdatePayloadSchema as PatchSchema,
+  CampaignUpdatePayload as PatchPayload,
+  CampaignUpdateData as PatchData,
+  CampaignDetailPayload as DetailPayload,
+  CampaignDetailData as DetailData,
+  CampaignDeletePayload as DeletePayload,
+  CampaignDeleteData as DeleteData,
+} from "@/schemas/campaigns";
 
-export const PATCH = createRouteHandler(
-  async (req, userId, { params }: { params: Promise<{ id: string }> }) => {
-    const body = await req.json();
-    const { id } = await params;
-    const data = CampaignCreatePayloadSchema.parse({
-      ...body,
-      id,
-    });
+export const PATCH = createRouteHandler<PatchPayload, PatchData>(
+  async ({ payload, userId }) => {
+    const { id, ...data } = PatchSchema.parse(payload);
     const campaign = await db().campaign.update({
       where: { id, userId },
       data,
     });
-    return NextResponse.json(campaign);
+    return new ApiResponse(campaign);
   }
 );
 
-export const DELETE = createRouteHandler(
-  async (req, userId, { params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params;
+export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
+  async ({ payload, userId }) => {
     const campaign = await db().campaign.delete({
-      where: { id, userId },
+      where: { id: payload.id, userId },
     });
-    return NextResponse.json(campaign);
+    return new ApiResponse(campaign);
   }
 );
 
-export const GET = createRouteHandler(
-  async (req, userId, { params }: { params: Promise<{ id: string }> }) => {
-    const { id } = await params;
+export const GET = createRouteHandler<DetailPayload, DetailData>(
+  async ({ payload, userId }) => {
     const campaign = await db().campaign.findUnique({
-      where: { id, userId },
+      where: { id: payload.id, userId },
     });
-    return NextResponse.json(campaign);
+    if (!campaign) {
+      throw new ApiError("Campaign not found", 404);
+    }
+    return new ApiResponse(campaign);
   }
 );

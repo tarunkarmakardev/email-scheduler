@@ -1,9 +1,11 @@
 import { authUrlConfig, getGoogleAuthClient } from "@/lib/google";
-import { GoogleAuthResponse } from "@/schemas/google";
+import { ApiResponse, createRouteHandler } from "@/lib/route-handler";
+import { GoogleAuthGetData, GoogleAuthGetPayload } from "@/schemas/google";
 
-export async function GET(request: Request) {
-  const client = getGoogleAuthClient();
-  const authUrl = client.generateAuthUrl(authUrlConfig);
-  const res: GoogleAuthResponse = { authUrl };
-  return Response.json(res);
-}
+export const GET = createRouteHandler<GoogleAuthGetPayload, GoogleAuthGetData>(
+  async () => {
+    const client = getGoogleAuthClient();
+    const authUrl = client.generateAuthUrl(authUrlConfig);
+    return new ApiResponse({ authUrl });
+  }
+);

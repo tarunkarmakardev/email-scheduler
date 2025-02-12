@@ -1,36 +1,43 @@
 import { db } from "@/lib/db";
 import { createListQuery } from "@/lib/list-query";
-import { createRouteHandler } from "@/lib/route-handler";
-import { CampaignCreatePayload, CampaignGetData } from "@/schemas/campaigns";
-import { NextResponse } from "next/server";
+import { ApiResponse, createRouteHandler } from "@/lib/route-handler";
+import {
+  CampaignGetData as GetData,
+  CampaignGetPayload as GetPayload,
+  CampaignCreatePayload as PostPayload,
+  CampaignCreateData as PostData,
+} from "@/schemas/campaigns";
 
-export const GET = createRouteHandler(async (request, userId) => {
-  const query = createListQuery({
-    input: request.nextUrl.searchParams.toString(),
-    searchColumns: ["name"],
-  });
-  const results = await db().campaign.findMany({
-    where: {
-      userId,
-      OR: query.where.OR,
-    },
-    orderBy: query.orderBy,
-    take: query.take,
-    skip: query.skip,
-  });
-  return NextResponse.json({
-    results,
-    total: results.length,
-  } as CampaignGetData);
-});
+export const GET = createRouteHandler<GetPayload, GetData>(
+  async ({ userId, payload }) => {
+    const query = createListQuery({
+      payload,
+      searchColumns: ["name"],
+    });
+    const items = await db().campaign.findMany({
+      where: {
+        userId,
+        OR: query.where.OR,
+      },
+      orderBy: query.orderBy,
+      take: query.take,
+      skip: query.skip,
+    });
+    return new ApiResponse({
+      items,
+      total: items.length,
+    });
+  }
+);
 
-export const POST = createRouteHandler(async (request, userId) => {
-  const data = (await request.json()) as CampaignCreatePayload;
-  const result = await db().campaign.create({
-    data: {
-      ...data,
-      userId,
-    },
-  });
-  return NextResponse.json(result);
-});
+export const POST = createRouteHandler<PostPayload, PostData>(
+  async ({ payload, userId }) => {
+    const result = await db().campaign.create({
+      data: {
+        ...payload,
+        userId,
+      },
+    });
+    return new ApiResponse(result);
+  }
+);

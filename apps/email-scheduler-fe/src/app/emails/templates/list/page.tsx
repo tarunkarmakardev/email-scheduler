@@ -8,7 +8,7 @@ export default async function Page() {
     <QueryContainer<EmailTemplateGetData> url={apiEndpoints.templates}>
       {(res) => (
         <div className="flex flex-col gap-4">
-          {res.data.results.map((r) => (
+          {res.result.items.map((r) => (
             <TemplateCard
               key={r.id}
               id={r.id}

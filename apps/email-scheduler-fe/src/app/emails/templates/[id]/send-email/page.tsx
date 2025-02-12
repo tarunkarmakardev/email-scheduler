@@ -16,7 +16,7 @@ export default async function Page({
         pathParams: { id },
       }}
     >
-      {(res) => <SendEmail template={res.data} />}
+      {(res) => <SendEmail template={res.result} />}
     </QueryContainer>
   );
 }

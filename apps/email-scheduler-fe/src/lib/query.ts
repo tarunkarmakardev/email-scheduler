@@ -1,6 +1,7 @@
 import "server-only";
 import { getEnv } from "./env";
 import { cookies } from "next/headers";
+import { ApiErrorResponse, ApiResponseJson } from "@/schemas/api";
 
 export type QueryOptions = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
@@ -9,24 +10,11 @@ export type QueryOptions = {
   searchParams?: Record<string, string>;
   pathParams?: Record<string, string>;
 };
-export type QueryErrorResponse = {
-  status: "ERROR";
-  statusCode: number;
-  statusText: string;
-  error: string;
-};
-export type QuerySuccessResponse<T> = {
-  status: "SUCCESS";
-  statusCode: number;
-  statusText: string;
-  data: T;
-};
-export type QueryResponse<T> = QuerySuccessResponse<T> | QueryErrorResponse;
 const env = getEnv();
 export async function query<T = unknown>(
   url: string,
   options?: QueryOptions
-): Promise<QueryResponse<T>> {
+): Promise<ApiResponseJson<T>> {
   const {
     method,
     headers,
@@ -34,8 +22,6 @@ export async function query<T = unknown>(
     searchParams = {},
     pathParams = {},
   } = options ?? {};
-  let statusCode = 200;
-  let statusText = "OK";
   try {
     const token = await cookies().get("token")?.value;
     const urlInstance = new URL(url, env.DOMAIN);
@@ -55,22 +41,13 @@ export async function query<T = unknown>(
       body,
       cache: "no-store",
     });
-    statusCode = req.status;
-    statusText = req.statusText;
-    const data = (await req.json()) as T;
-    return {
-      status: "SUCCESS",
-      data,
-      statusCode,
-      statusText,
-    };
+    return (await req.json()) as ApiResponseJson<T>;
   } catch (error) {
-    const e = error instanceof Error ? error : new Error("Unknown Error");
     return {
+      error: "Unknown Error",
       status: "ERROR",
-      error: e.message,
-      statusCode,
-      statusText,
-    };
+      statusCode: 500,
+      __error: error,
+    } as ApiErrorResponse;
   }
 }

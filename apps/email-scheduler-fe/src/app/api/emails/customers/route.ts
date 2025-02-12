@@ -1,34 +1,41 @@
 import { db } from "@/lib/db";
 import { createListQuery } from "@/lib/list-query";
-import { parseQueryString } from "@/lib/query-string";
-import { createRouteHandler } from "@/lib/route-handler";
-import { CustomerGetData } from "@/schemas/customers";
-import { NextResponse } from "next/server";
+import { ApiResponse, createRouteHandler } from "@/lib/route-handler";
+import {
+  CustomerGetData as GetData,
+  CustomerGetPayload as GetPayload,
+  CustomerCreatePayload as PostPayload,
+  CustomerCreateData as PostData,
+  CustomerCreatePayloadSchema as PostSchema,
+} from "@/schemas/customers";
 
-export const GET = createRouteHandler(async (request, userId) => {
-  const { campaignId } = parseQueryString(
-    request.nextUrl.searchParams.toString(),
-    {
-      campaignId: "",
-    }
-  );
-  const query = createListQuery({
-    input: request.nextUrl.searchParams.toString(),
-    searchColumns: ["email", "firstName", "lastName"],
-  });
-  const results = await db().customer.findMany({
-    ...query,
-    where: {
-      ...query.where,
-      campaigns: {
-        some: {
-          id: campaignId,
+export const GET = createRouteHandler<GetPayload, GetData>(
+  async ({ payload }) => {
+    const query = createListQuery({
+      searchColumns: ["email", "firstName", "lastName"],
+      payload,
+    });
+    const items = await db().customer.findMany({
+      ...query,
+      where: {
+        ...query.where,
+        campaigns: {
+          some: {
+            id: payload.campaignId,
+          },
         },
       },
-    },
-  });
-  return NextResponse.json({
-    results,
-    total: results.length,
-  } as CustomerGetData);
-});
+    });
+    return new ApiResponse({ items, total: items.length });
+  }
+);
+
+export const POST = createRouteHandler<PostPayload, PostData>(
+  async ({ payload, userId }) => {
+    const data = PostSchema.parse(payload);
+    const customer = await db().customer.create({
+      data: { ...data, userId },
+    });
+    return new ApiResponse(customer);
+  }
+);

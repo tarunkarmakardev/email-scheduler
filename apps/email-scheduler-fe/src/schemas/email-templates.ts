@@ -19,7 +19,7 @@ export const EmailTemplateGetPayloadSchema = z.object({
 });
 
 export const EmailTemplateGetDataSchema = z.object({
-  results: z.array(EmailTemplateSchema),
+  items: z.array(EmailTemplateSchema),
   total: z.number(),
 });
 
@@ -51,19 +51,22 @@ export const EmailTemplateDetailPayloadSchema = EmailTemplateSchema.pick({
 });
 export const EmailTemplateDetailDataSchema = EmailTemplateSchema;
 
+export type EmailTemplate = z.infer<typeof EmailTemplateSchema>;
 export type EmailTemplateFormValues = z.infer<
   typeof EmailTemplateFormValuesSchema
 >;
 export type EmailTemplateCreatePayload = z.infer<
   typeof EmailTemplateCreatePayloadSchema
 >;
+export type EmailTemplateCreateData = EmailTemplate;
 export type EmailTemplateUpdatePayload = z.infer<
   typeof EmailTemplateUpdatePayloadSchema
 >;
+export type EmailTemplateUpdateData = EmailTemplate;
 export type EmailTemplateDeletePayload = z.infer<
   typeof EmailTemplateDeletePayloadSchema
 >;
-export type EmailTemplate = z.infer<typeof EmailTemplateSchema>;
+export type EmailTemplateDeleteData = EmailTemplate;
 export type EmailTemplateGetPayload = z.infer<
   typeof EmailTemplateGetPayloadSchema
 >;

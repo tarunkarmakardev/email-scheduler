@@ -11,12 +11,9 @@ export default async function Page({
   const { id } = await params;
   return (
     <QueryContainer<EmailTemplateDetailData>
-      url={apiEndpoints.templateDetail}
-      options={{
-        pathParams: { id },
-      }}
+      url={apiEndpoints.templateDetail(id)}
     >
-      {(res) => <EditTemplate template={res.data} />}
+      {(res) => <EditTemplate template={res.result} />}
     </QueryContainer>
   );
 }

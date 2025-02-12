@@ -63,7 +63,7 @@ export default function SendEmail({ template }: SendEmailProps) {
       return res.data as CustomerGetData;
     },
   });
-  const { results: campaigns = [] } = campaignsQuery.data || {};
+  const { items: campaigns = [] } = campaignsQuery.data || {};
 
   return (
     <div className="w-[500px] py-4">
@@ -153,7 +153,7 @@ export default function SendEmail({ template }: SendEmailProps) {
 function CustomersList({ data }: { data?: CustomerGetData }) {
   const renderContent = () => {
     if (!data) return <div className="text-sm">No recipients</div>;
-    return data.results.map((customer) => (
+    return data.items.map((customer) => (
       <Badge key={customer.id} variant="secondary" className=" h-6 py-0">
         {customer.email}
       </Badge>

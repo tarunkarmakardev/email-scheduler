@@ -20,7 +20,7 @@ export const CustomerGetPayloadSchema = z.object({
 });
 
 export const CustomerGetDataSchema = z.object({
-  results: z.array(CustomerSchema),
+  items: z.array(CustomerSchema),
   total: z.number(),
 });
 
@@ -39,8 +39,21 @@ export const CustomerUpdatePayloadSchema = CustomerSchema.pick({
   .partial()
   .required({ id: true });
 
+export const CustomerDetailPayloadSchema = CustomerSchema.pick({
+  id: true,
+});
+export const CustomerDeletePayloadSchema = CustomerSchema.pick({
+  id: true,
+});
+
 export type Customer = z.infer<typeof CustomerSchema>;
 export type CustomerGetPayload = z.infer<typeof CustomerGetPayloadSchema>;
 export type CustomerGetData = z.infer<typeof CustomerGetDataSchema>;
 export type CustomerCreatePayload = z.infer<typeof CustomerCreatePayloadSchema>;
+export type CustomerCreateData = Customer;
 export type CustomerUpdatePayload = z.infer<typeof CustomerUpdatePayloadSchema>;
+export type CustomerUpdateData = Customer;
+export type CustomerDetailPayload = z.infer<typeof CustomerDetailPayloadSchema>;
+export type CustomerDetailData = Customer;
+export type CustomerDeletePayload = z.infer<typeof CustomerDeletePayloadSchema>;
+export type CustomerDeleteData = Customer;

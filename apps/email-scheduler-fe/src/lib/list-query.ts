@@ -1,48 +1,37 @@
-import { ListQuery, ListQuerySchema } from "@/schemas/list-query";
-import { parseQueryString } from "./query-string";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-export function createListQuery({
-  input,
+export function createListQuery<Payload>({
+  payload,
   searchColumns,
 }: {
-  input: string;
+  payload: Payload;
   searchColumns: string[];
 }) {
-  const initialValues = {
-    limit: 10,
-    offset: 0,
-    search: "",
-    sortBy: "",
-    sortOrder: "",
-  };
-  const { limit, offset, search, sortBy, sortOrder } = ListQuerySchema.parse(
-    parseQueryString<ListQuery>(input, initialValues, {
-      types: {
-        search: "string",
-        sortBy: "string",
-        sortOrder: "string",
-        limit: "number",
-        offset: "number",
-      },
-    })
-  );
+  const { limit = 10, offset = 0, search, sortBy, sortOrder } = payload as any;
 
-  const OR = searchColumns.map((column) => ({
-    [column]: {
-      contains: search,
-      mode: "insensitive",
-    },
-  }));
+  let OR;
+  let orderBy;
+
+  if (search) {
+    OR = searchColumns.map((column) => ({
+      [column]: {
+        contains: search,
+        mode: "insensitive",
+      },
+    }));
+  }
+
+  if (sortBy && sortOrder) {
+    orderBy = {
+      [sortBy]: sortOrder,
+    };
+  }
+
   return {
     where: {
       OR,
     },
-    orderBy:
-      sortBy && sortOrder
-        ? {
-            [sortBy]: sortOrder,
-          }
-        : undefined,
+    orderBy,
     take: limit,
     skip: offset,
   };

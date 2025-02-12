@@ -1,6 +1,5 @@
 // eslint-disable-next-line @nx/enforce-module-boundaries
 import "../../../../libs/tailwind/global.css";
-import TopBar from "@/features/top-bar";
 import Providers from "@/features/providers";
 import { Toaster } from "@email-scheduler/ui";
 
@@ -18,8 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <TopBar />
-          <main className="p-6">{children}</main>
+          {children}
           <Toaster />
         </Providers>
       </body>

@@ -1,54 +1,54 @@
 import { db } from "@/lib/db";
-import { createRouteHandler } from "@/lib/route-handler";
+import { ApiError, ApiResponse, createRouteHandler } from "@/lib/route-handler";
 import {
-  EmailTemplateDeletePayloadSchema,
-  EmailTemplateUpdatePayloadSchema,
+  EmailTemplateDeletePayloadSchema as DeletePayloadSchema,
+  EmailTemplateUpdatePayloadSchema as PatchPayloadSchema,
+  EmailTemplateDeletePayload as DeletePayload,
+  EmailTemplateDeleteData as DeleteData,
+  EmailTemplateDetailData as GetData,
+  EmailTemplateDetailPayload as GetPayload,
+  EmailTemplateUpdatePayload as PatchPayload,
+  EmailTemplateUpdateData as PatchData,
 } from "@/schemas/email-templates";
-import { NextResponse } from "next/server";
 
-export const GET = createRouteHandler(
-  async (request, userId, { params }: { params: Promise<{ id: string }> }) => {
-    const id = (await params).id;
+export const GET = createRouteHandler<GetPayload, GetData>(
+  async ({ payload, userId }) => {
     const result = await db().emailTemplate.findUnique({
+      where: {
+        id: payload.id,
+        userId,
+      },
+    });
+    if (!result) {
+      throw new ApiError("Email template not found", 404);
+    }
+    return new ApiResponse(result);
+  }
+);
+
+export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
+  async ({ payload, userId }) => {
+    const { id, ...data } = DeletePayloadSchema.parse(payload);
+    const template = await db().emailTemplate.update({
       where: {
         id,
         userId,
       },
+      data,
     });
-    return NextResponse.json(result);
+    return new ApiResponse(template);
   }
 );
 
-export const PATCH = createRouteHandler(
-  async (request, userId, { params }: { params: Promise<{ id: string }> }) => {
-    const data = await request.json();
-    const id = (await params).id;
-    const validatedData = EmailTemplateUpdatePayloadSchema.parse({
-      ...data,
-      id,
-    });
-    const result = await db().emailTemplate.update({
-      where: {
-        id: validatedData.id,
-        userId,
-      },
-      data: {
-        ...validatedData,
-      },
-    });
-    return NextResponse.json(result);
-  }
-);
-
-export const DELETE = createRouteHandler(
-  async (request, userId, { params }: { params: Promise<{ id: string }> }) => {
-    const validatedData = EmailTemplateDeletePayloadSchema.parse(params);
+export const PATCH = createRouteHandler<PatchPayload, PatchData>(
+  async ({ payload, userId }) => {
+    const validatedData = PatchPayloadSchema.parse(payload);
     const result = await db().emailTemplate.delete({
       where: {
         id: validatedData.id,
         userId,
       },
     });
-    return NextResponse.json(result);
+    return new ApiResponse(result);
   }
 );

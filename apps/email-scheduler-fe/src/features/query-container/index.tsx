@@ -1,9 +1,10 @@
-import { query, QueryOptions, QuerySuccessResponse } from "@/lib/query";
+import { query, QueryOptions } from "@/lib/query";
+import { ApiSuccessResponse } from "@/schemas/api";
 
 export type QueryContainerProps<T> = {
   url: string;
   options?: QueryOptions;
-  children: (res: QuerySuccessResponse<T>) => React.ReactNode;
+  children: (res: ApiSuccessResponse<T>) => React.ReactNode;
 };
 
 export default async function QueryContainer<T>({
@@ -12,6 +13,8 @@ export default async function QueryContainer<T>({
   children,
 }: QueryContainerProps<T>) {
   const res = await query<T>(url, options);
+  console.log(res);
+
   if (res.status === "ERROR") return <div>Error</div>;
   return <div>{children(res)}</div>;
 }

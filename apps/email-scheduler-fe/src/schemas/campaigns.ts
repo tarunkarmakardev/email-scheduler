@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { CustomerCreatePayloadSchema, CustomerSchema } from "./customers";
+import { CustomerCreatePayloadSchema } from "./customers";
 
 export const CampaignSchema = z.object({
   id: z.string().uuid(),
@@ -7,7 +7,6 @@ export const CampaignSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().optional(),
   userId: z.string(),
-  customers: z.array(CustomerSchema),
 });
 
 export const CampaignGetPayloadSchema = z.object({
@@ -19,7 +18,7 @@ export const CampaignGetPayloadSchema = z.object({
 });
 
 export const CampaignGetDataSchema = z.object({
-  results: z.array(CampaignSchema),
+  items: z.array(CampaignSchema),
   total: z.number(),
 });
 export const CampaignDetailPayloadSchema = z.object({
@@ -36,6 +35,10 @@ export const CampaignUpdatePayloadSchema = CampaignSchema.pick({
   .partial()
   .required({ id: true });
 
+export const CampaignDeleteSchema = CampaignSchema.pick({
+  id: true,
+});
+
 export const CampaignFormValuesSchema = CampaignSchema.pick({
   name: true,
 }).extend({
@@ -48,5 +51,9 @@ export type CampaignGetData = z.infer<typeof CampaignGetDataSchema>;
 export type CampaignDetailPayload = z.infer<typeof CampaignDetailPayloadSchema>;
 export type CampaignDetailData = z.infer<typeof CampaignDetailDataSchema>;
 export type CampaignCreatePayload = z.infer<typeof CampaignCreatePayloadSchema>;
+export type CampaignCreateData = Campaign;
 export type CampaignUpdatePayload = z.infer<typeof CampaignUpdatePayloadSchema>;
+export type CampaignUpdateData = Campaign;
+export type CampaignDeletePayload = z.infer<typeof CampaignDeleteSchema>;
+export type CampaignDeleteData = Campaign;
 export type CampaignFormValues = z.infer<typeof CampaignFormValuesSchema>;

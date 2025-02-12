@@ -10,3 +10,11 @@ export const UserSchema = z.object({
   password: z.string().optional(),
   googleToken: z.custom<Auth.Credentials>().optional(),
 });
+
+export const UserDetailPayloadSchema = UserSchema.pick({ id: true });
+export const UserDetailDataSchema = UserSchema.omit({
+  googleToken: true,
+  password: true,
+});
+export type UserDetailPayload = z.infer<typeof UserDetailPayloadSchema>;
+export type UserDetailData = z.infer<typeof UserDetailDataSchema>;
