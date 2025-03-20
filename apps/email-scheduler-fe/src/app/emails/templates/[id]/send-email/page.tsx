@@ -11,10 +11,7 @@ export default async function Page({
   const { id } = await params;
   return (
     <QueryContainer<EmailTemplateDetailData>
-      url={apiEndpoints.templateDetail(id)}
-      options={{
-        pathParams: { id },
-      }}
+      url={apiEndpoints.templates.detail(id)}
     >
       {(res) => <SendEmail template={res.result} />}
     </QueryContainer>

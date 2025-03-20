@@ -1,6 +1,5 @@
 "use client";
 import {
-  EmailTemplateDetailData,
   EmailTemplateFormValues,
   EmailTemplateFormValuesSchema,
 } from "@/schemas/email-templates";
@@ -19,15 +18,23 @@ import {
 } from "@email-scheduler/ui";
 import { Loader2 } from "lucide-react";
 
+const initialValues: EmailTemplateFormValues = {
+  body: "",
+  name: "",
+  subject: "",
+};
+
 type TemplateFormProps = {
   loading?: boolean;
-  template: EmailTemplateDetailData;
+  submitButtonText?: string;
+  template?: EmailTemplateFormValues;
   onSubmit: (data: EmailTemplateFormValues) => void;
 };
 export default function TemplateForm({
-  template,
+  template = initialValues,
   onSubmit,
   loading,
+  submitButtonText = "Submit",
 }: TemplateFormProps) {
   const form = useForm({
     resolver: zodResolver(EmailTemplateFormValuesSchema),
@@ -89,7 +96,7 @@ export default function TemplateForm({
         />
         <Button disabled={!form.formState.isValid || loading} type="submit">
           {loading && <Loader2 className="animate-spin" />}
-          Update
+          {submitButtonText}
         </Button>
       </form>
     </Form>

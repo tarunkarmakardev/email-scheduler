@@ -1,10 +1,27 @@
 export const apiEndpoints = {
   googleAuth: "/api/auth/google",
-  templates: "/api/emails/templates",
-  templateDetail: (id: string) => `/api/emails/templates/${id}`,
-  campaigns: "/api/emails/campaigns",
-  campaignDetail: (id: string) => `/api/emails/campaigns/${id}`,
-  customers: "/api/emails/customers",
+  templates: {
+    get: "/api/emails/templates",
+    post: "/api/emails/templates",
+    detail: (id: string) => `/api/emails/templates/${id}`,
+    delete: (id: string) => `/api/emails/templates/${id}`,
+    patch: (id: string) => `/api/emails/templates/${id}`,
+  },
+  campaigns: {
+    get: "/api/emails/campaigns",
+    post: "/api/emails/campaigns",
+    detail: (id: string) => `/api/emails/campaigns/${id}`,
+    delete: (id: string) => `/api/emails/campaigns/${id}`,
+    patch: (id: string) => `/api/emails/campaigns/${id}`,
+  },
+  customers: {
+    get: "/api/emails/customers",
+    post: "/api/emails/customers",
+    detail: (id: string) => `/api/emails/customers/${id}`,
+    delete: (id: string) => `/api/emails/customers/${id}`,
+    patch: (id: string) => `/api/emails/customers/${id}`,
+  },
+  userMe: "/api/users/me",
 };
 export const appRoutes = {
   templates: {

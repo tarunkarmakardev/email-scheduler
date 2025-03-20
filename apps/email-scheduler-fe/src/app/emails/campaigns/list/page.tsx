@@ -5,7 +5,7 @@ import { CampaignGetData } from "@/schemas/campaigns";
 
 export default async function Page() {
   return (
-    <QueryContainer<CampaignGetData> url={apiEndpoints.campaigns}>
+    <QueryContainer<CampaignGetData> url={apiEndpoints.campaigns.get}>
       {(res) => (
         <div className="flex flex-col gap-4">
           {res.result.items.map((camp) => (

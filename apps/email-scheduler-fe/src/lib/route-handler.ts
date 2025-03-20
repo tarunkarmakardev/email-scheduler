@@ -20,17 +20,20 @@ export function createRouteHandler<Req, Res>(
     const userId = await getAuthUserId(request);
     if (!userId) throw new ApiError("Unauthorized", 401);
     const pathParams = await params;
+
     let payload = {} as Req;
     if (pathParams) {
       payload = pathParams as Req;
     }
+    console.log({ payload });
     const contentLengthHeader = request.headers.get("Content-Length");
     const searchParams = request.nextUrl.searchParams.toString();
     const hasBody = contentLengthHeader && parseInt(contentLengthHeader) > 0;
     if (hasBody) {
-      payload = (await request.json()) as Req;
+      const body = await request.json();
+      payload = { ...payload, ...body };
     } else if (searchParams) {
-      payload = parseQueryString(
+      const parsedSearchParams = parseQueryString(
         searchParams,
         {},
         {
@@ -42,7 +45,8 @@ export function createRouteHandler<Req, Res>(
             offset: "number",
           },
         }
-      ) as Req;
+      );
+      payload = { ...payload, ...parsedSearchParams };
     }
     try {
       const res = await handler({ payload, request, userId });

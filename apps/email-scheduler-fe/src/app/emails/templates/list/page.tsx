@@ -5,7 +5,7 @@ import { EmailTemplateGetData } from "@/schemas/email-templates";
 
 export default async function Page() {
   return (
-    <QueryContainer<EmailTemplateGetData> url={apiEndpoints.templates}>
+    <QueryContainer<EmailTemplateGetData> url={apiEndpoints.templates.get}>
       {(res) => (
         <div className="flex flex-col gap-4">
           {res.result.items.map((r) => (

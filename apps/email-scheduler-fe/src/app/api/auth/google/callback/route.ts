@@ -1,3 +1,4 @@
+import { appRoutes } from "@/config";
 import { createSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getGoogleAuthClient, getUserInfo } from "@/lib/google";
@@ -25,5 +26,5 @@ export async function GET(request: NextRequest) {
     });
   }
   await createSession(user);
-  redirect("/emails/templates");
+  redirect(appRoutes.templates.list);
 }

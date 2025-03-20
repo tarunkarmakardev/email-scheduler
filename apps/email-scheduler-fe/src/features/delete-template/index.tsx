@@ -1,4 +1,5 @@
 "use client";
+import { apiEndpoints } from "@/config";
 import { Button, useToast } from "@email-scheduler/ui";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -9,7 +10,7 @@ export function DeleteTemplateButton({ id }: { id: string }) {
   const router = useRouter();
   const { toast } = useToast();
   const templateDeleteMutation = useMutation({
-    mutationFn: () => axios.delete(`/api/emails/templates/${id}`),
+    mutationFn: () => axios.delete(apiEndpoints.templates.delete(id)),
   });
   const handleDelete = () => {
     templateDeleteMutation.mutate(undefined, {

@@ -7,9 +7,9 @@ import {
 import { api } from "@/lib/axios";
 import TemplateForm from "../template-form";
 import { Button, useToast } from "@email-scheduler/ui";
-import { useRouter } from "next/router";
 import Link from "next/link";
-import { apiEndpoints } from "@/config";
+import { apiEndpoints, appRoutes } from "@/config";
+import { useRouter } from "next/navigation";
 
 type EditTemplateProps = {
   template: EmailTemplateDetailData;
@@ -21,7 +21,7 @@ export default function EditTemplate({ template }: EditTemplateProps) {
   const templatePatchMutation = useMutation({
     mutationFn: async (values: EmailTemplateFormValues) => {
       const res = await api.patch(
-        apiEndpoints.templateDetail(template.id),
+        apiEndpoints.templates.patch(template.id),
         values
       );
       return res.data;
@@ -33,7 +33,7 @@ export default function EditTemplate({ template }: EditTemplateProps) {
         toast({
           title: "Template Updated",
         });
-        router.push("/emails/templates/list");
+        router.push(appRoutes.templates.list);
       },
     });
   };
@@ -42,6 +42,7 @@ export default function EditTemplate({ template }: EditTemplateProps) {
       loading={templatePatchMutation.isPending}
       template={template}
       onSubmit={handleSubmit}
+      submitButtonText="Update"
     />
   );
 }
@@ -49,7 +50,7 @@ export default function EditTemplate({ template }: EditTemplateProps) {
 export function EditTemplateButton({ id }: { id: string }) {
   return (
     <div>
-      <Link href={`/emails/templates/edit/${id}`}>
+      <Link href={appRoutes.templates.edit(id)}>
         <Button variant="outline">Edit</Button>
       </Link>
     </div>

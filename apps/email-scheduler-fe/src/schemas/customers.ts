@@ -20,8 +20,10 @@ export const CustomerGetPayloadSchema = z.object({
 });
 
 export const CustomerGetDataSchema = z.object({
-  items: z.array(CustomerSchema),
-  total: z.number(),
+  result: z.object({
+    items: z.array(CustomerSchema),
+    total: z.number(),
+  }),
 });
 
 export const CustomerCreatePayloadSchema = CustomerSchema.pick({

@@ -26,7 +26,7 @@ export const GET = createRouteHandler<GetPayload, GetData>(
         },
       },
     });
-    return new ApiResponse({ items, total: items.length });
+    return new ApiResponse({ result: { items, total: items.length } });
   }
 );
 

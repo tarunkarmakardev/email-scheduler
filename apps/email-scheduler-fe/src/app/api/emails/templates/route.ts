@@ -29,9 +29,8 @@ export const GET = createRouteHandler<GetPayload, GetData>(
 );
 
 export const POST = createRouteHandler<PostPayload, PostData>(
-  async ({ request, userId }) => {
-    const data = await request.json();
-    const validatedData = EmailTemplateCreatePayloadSchema.parse(data);
+  async ({ request, userId, payload }) => {
+    const validatedData = EmailTemplateCreatePayloadSchema.parse(payload);
     const result = await db().emailTemplate.create({
       data: {
         ...validatedData,

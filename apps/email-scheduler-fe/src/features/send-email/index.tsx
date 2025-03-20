@@ -25,6 +25,7 @@ import EmailBodyEditor from "../email-body-editor";
 import { api } from "@/lib/axios";
 import { CustomerGetData } from "@/schemas/customers";
 import { Mail } from "lucide-react";
+import { ApiSuccessResponse } from "@/schemas/api";
 
 type SendEmailProps = {
   template: EmailTemplateDetailData;
@@ -51,19 +52,19 @@ export default function SendEmail({ template }: SendEmailProps) {
   const campaignsQuery = useQuery({
     queryKey: [apiEndpoints.campaigns],
     queryFn: async () => {
-      const res = await api.get(apiEndpoints.campaigns);
-      return res.data as CampaignGetData;
+      const res = await api.get(apiEndpoints.campaigns.get);
+      return res.data as ApiSuccessResponse<CampaignGetData>;
     },
   });
   const customersMutation = useMutation({
     mutationFn: async (payload: { campaignId: string }) => {
-      const res = await api.get(apiEndpoints.customers, {
+      const res = await api.get(apiEndpoints.customers.get, {
         params: payload,
       });
       return res.data as CustomerGetData;
     },
   });
-  const { items: campaigns = [] } = campaignsQuery.data || {};
+  const { items: campaigns = [] } = campaignsQuery.data?.result || {};
 
   return (
     <div className="w-[500px] py-4">
@@ -153,7 +154,7 @@ export default function SendEmail({ template }: SendEmailProps) {
 function CustomersList({ data }: { data?: CustomerGetData }) {
   const renderContent = () => {
     if (!data) return <div className="text-sm">No recipients</div>;
-    return data.items.map((customer) => (
+    return data.result.items.map((customer) => (
       <Badge key={customer.id} variant="secondary" className=" h-6 py-0">
         {customer.email}
       </Badge>

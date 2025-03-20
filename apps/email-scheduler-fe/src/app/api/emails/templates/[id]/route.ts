@@ -28,13 +28,12 @@ export const GET = createRouteHandler<GetPayload, GetData>(
 
 export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
   async ({ payload, userId }) => {
-    const { id, ...data } = DeletePayloadSchema.parse(payload);
-    const template = await db().emailTemplate.update({
+    const { id } = DeletePayloadSchema.parse(payload);
+    const template = await db().emailTemplate.delete({
       where: {
         id,
         userId,
       },
-      data,
     });
     return new ApiResponse(template);
   }
