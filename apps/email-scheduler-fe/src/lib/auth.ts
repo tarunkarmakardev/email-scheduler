@@ -3,6 +3,7 @@ import * as jose from "jose";
 import { getEnv } from "./env";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
+import { ApiError } from "./route-handler";
 
 const env = getEnv();
 const SECRET = new TextEncoder().encode(env.SECRET);
@@ -17,8 +18,12 @@ export function generateAuthToken(user: { id: string }, expiresAt: Date) {
     .sign(SECRET);
 }
 
-export function verifyAuthToken(token: string) {
-  return jose.jwtVerify(token, SECRET);
+export async function verifyAuthToken(token: string) {
+  try {
+    return await jose.jwtVerify(token, SECRET);
+  } catch (e) {
+    throw new ApiError("Invalid token", 401);
+  }
 }
 
 export async function createSession(user: { id: string }) {

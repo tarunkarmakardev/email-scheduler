@@ -16,3 +16,5 @@ export const GET = createRouteHandler<UserDetailPayload, UserDetailData>(
     return new ApiResponse(UserDetailDataSchema.parse(currentUser));
   }
 );
+
+export const dynamic = "force-dynamic";

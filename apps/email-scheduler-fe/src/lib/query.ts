@@ -41,6 +41,7 @@ export async function query<T = unknown>(
       body,
       cache: "no-store",
     });
+
     return (await req.json()) as ApiResponseJson<T>;
   } catch (error) {
     return {

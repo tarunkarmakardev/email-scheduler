@@ -1,15 +1,24 @@
-export type Env = {
-  GOOGLE_CLIENT_ID: string;
-  GOOGLE_CLIENT_SECRET: string;
-  DOMAIN: string;
-  SECRET: string;
-};
-export type ClientEnv = object;
+import { z } from "zod";
 
-export function getEnv() {
-  return process.env as unknown as Env;
+export const ServerEnvSchema = z.object({
+  GOOGLE_CLIENT_ID: z.string(),
+  GOOGLE_CLIENT_SECRET: z.string(),
+  DOMAIN: z.string(),
+  SECRET: z.string(),
+});
+
+export const ClientEnvSchema = z.object({});
+
+export type ServerEnv = z.infer<typeof ServerEnvSchema>;
+
+export type ClientEnv = z.infer<typeof ClientEnvSchema>;
+
+export function getEnv(): ServerEnv {
+  const env = ServerEnvSchema.parse(process.env);
+  return env;
 }
 
-export function getClientEnv() {
-  return process.env as unknown as ClientEnv;
+export function getClientEnv(): ClientEnv {
+  const env = ClientEnvSchema.parse(process.env);
+  return env;
 }

@@ -6,14 +6,15 @@ const publicRoutes = ["/auth/sign-in", "/auth/sign-up", "/"];
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
   const isProtectedRoute = !publicRoutes.includes(path);
-  const userId = await getAuthUserId(req);
-
-  if (isProtectedRoute && !userId) {
-    return NextResponse.redirect(new URL("/auth/sign-in", req.nextUrl));
+  if (isProtectedRoute) {
+    const userId = await getAuthUserId(req);
+    if (!userId) {
+      return NextResponse.redirect(new URL("/auth/sign-in", req.nextUrl));
+    }
   }
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon|.*\\.png$).*)"],
 };

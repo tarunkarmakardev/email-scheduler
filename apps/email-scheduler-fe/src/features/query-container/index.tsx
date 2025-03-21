@@ -13,8 +13,6 @@ export default async function QueryContainer<T>({
   children,
 }: QueryContainerProps<T>) {
   const res = await query<T>(url, options);
-  console.log(res);
-
   if (res.status === "ERROR") return <div>Error</div>;
   return <div>{children(res)}</div>;
 }
