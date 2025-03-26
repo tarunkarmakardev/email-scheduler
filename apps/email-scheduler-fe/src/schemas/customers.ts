@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const CustomerSchema = z.object({
   id: z.string().uuid(),
-  firstName: z.string(),
-  lastName: z.string(),
+  firstName: z.string().nonempty(),
+  lastName: z.string().nonempty(),
   email: z.string().email(),
   createdAt: z.date(),
   updatedAt: z.date().optional(),

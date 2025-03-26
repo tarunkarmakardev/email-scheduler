@@ -48,6 +48,7 @@ export default function TemplateForm({
       name: template.name,
       subject: template.subject,
     },
+    mode: "all",
   });
   return (
     <Form {...form}>

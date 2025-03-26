@@ -12,10 +12,21 @@ import {
 
 export const PATCH = createRouteHandler<PatchPayload, PatchData>(
   async ({ payload, userId }) => {
-    const { id, ...data } = PatchSchema.parse(payload);
+    const { id, customers = [], ...data } = PatchSchema.parse(payload);
     const campaign = await db().campaign.update({
       where: { id, userId },
-      data,
+      data: {
+        ...data,
+        customers: {
+          set: customers.map((c) => ({
+            ...c,
+            userId,
+          })),
+        },
+      },
+      include: {
+        customers: true,
+      },
     });
     return new ApiResponse(campaign);
   }
@@ -25,6 +36,9 @@ export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
   async ({ payload, userId }) => {
     const campaign = await db().campaign.delete({
       where: { id: payload.id, userId },
+      include: {
+        customers: true,
+      },
     });
     return new ApiResponse(campaign);
   }
@@ -34,6 +48,9 @@ export const GET = createRouteHandler<DetailPayload, DetailData>(
   async ({ payload, userId }) => {
     const campaign = await db().campaign.findUnique({
       where: { id: payload.id, userId },
+      include: {
+        customers: true,
+      },
     });
     if (!campaign) {
       throw new ApiError("Campaign not found", 404);

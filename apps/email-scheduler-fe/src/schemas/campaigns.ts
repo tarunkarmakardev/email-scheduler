@@ -3,10 +3,11 @@ import { CustomerCreatePayloadSchema } from "./customers";
 
 export const CampaignSchema = z.object({
   id: z.string().uuid(),
-  name: z.string(),
+  name: z.string().min(3),
   createdAt: z.date(),
   updatedAt: z.date().optional(),
   userId: z.string(),
+  customers: z.array(CustomerCreatePayloadSchema).min(3),
 });
 
 export const CampaignGetPayloadSchema = z.object({
@@ -27,10 +28,12 @@ export const CampaignDetailPayloadSchema = z.object({
 export const CampaignDetailDataSchema = CampaignSchema;
 export const CampaignCreatePayloadSchema = CampaignSchema.pick({
   name: true,
+  customers: true,
 });
 export const CampaignUpdatePayloadSchema = CampaignSchema.pick({
   id: true,
   name: true,
+  customers: true,
 })
   .partial()
   .required({ id: true });
@@ -41,10 +44,8 @@ export const CampaignDeleteSchema = CampaignSchema.pick({
 
 export const CampaignFormValuesSchema = CampaignSchema.pick({
   name: true,
-}).extend({
-  customers: z.array(CustomerCreatePayloadSchema),
+  customers: true,
 });
-
 export type Campaign = z.infer<typeof CampaignSchema>;
 export type CampaignGetPayload = z.infer<typeof CampaignGetPayloadSchema>;
 export type CampaignGetData = z.infer<typeof CampaignGetDataSchema>;
