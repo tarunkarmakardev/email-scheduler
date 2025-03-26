@@ -5,33 +5,35 @@ import { getAuthUserId } from "./auth";
 import { ApiErrorResponse, ApiResponseJson } from "@/schemas/api";
 import { parseQueryString } from "./query-string";
 
-type RouteHandlerConfig<Req> = {
+type RouteHandlerConfig<Payload> = {
   request: NextRequest;
   userId: string;
-  payload: Req;
+  payload: Payload;
+  originalBody: Payload;
 };
 
-export function createRouteHandler<Req, Res>(
+export function createRouteHandler<Payload, Res>(
   handler: (
-    routHandlerObj: RouteHandlerConfig<Req>
+    routHandlerObj: RouteHandlerConfig<Payload>
   ) => Promise<ApiResponse<Res>>
 ) {
   return async (request: NextRequest, { params }: { params: Promise<any> }) => {
     const userId = await getAuthUserId(request);
     if (!userId) throw new ApiError("Unauthorized", 401);
     const pathParams = await params;
-
-    let payload = {} as Req;
+    let payload = {} as Payload;
+    let originalBody: Payload | undefined;
     if (pathParams) {
-      payload = pathParams as Req;
+      payload = pathParams as Payload;
     }
-    console.log({ payload });
     const contentLengthHeader = request.headers.get("Content-Length");
     const searchParams = request.nextUrl.searchParams.toString();
     const hasBody = contentLengthHeader && parseInt(contentLengthHeader) > 0;
     if (hasBody) {
-      const body = await request.json();
-      payload = { ...payload, ...body };
+      originalBody = await request.json();
+      if (!Array.isArray(originalBody)) {
+        payload = { ...payload, ...originalBody };
+      }
     } else if (searchParams) {
       const parsedSearchParams = parseQueryString(
         searchParams,
@@ -49,7 +51,12 @@ export function createRouteHandler<Req, Res>(
       payload = { ...payload, ...parsedSearchParams };
     }
     try {
-      const res = await handler({ payload, request, userId });
+      const res = await handler({
+        payload,
+        request,
+        originalBody: originalBody as Payload,
+        userId,
+      });
       return res.toResponse();
     } catch (error) {
       let message = "";
