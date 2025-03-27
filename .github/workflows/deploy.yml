@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
 jobs:
   deploy:
+    permissions:
+      contents: "read"
+      id-token: "write"
     runs-on: ubuntu-latest
     env:
       IMAGE_TAG: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:latest
@@ -16,7 +19,9 @@ jobs:
       - name: Set up Google Cloud Auth
         uses: "google-github-actions/auth@v2"
         with:
-          credentials_json: "${{ secrets.GCP_SA_JSON }}"
+          token_format: "access_token"
+          workload_identity_provider: "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}"
+          service_account: "${{ secrets.GCP_SA }}"
       - name: Set up BE Env
         run: |
           echo "${{ secrets.ENV }}" >> ${{ env.APP_PATH }}/.env
