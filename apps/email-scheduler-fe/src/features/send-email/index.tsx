@@ -1,6 +1,6 @@
 "use client";
 import { apiEndpoints } from "@/config";
-import { CampaignGetData } from "@/schemas/campaigns";
+import { Campaign, CampaignGetData } from "@/schemas/campaigns";
 import { EmailTemplateDetailData } from "@/schemas/email-templates";
 import {
   Badge,
@@ -19,11 +19,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@email-scheduler/ui";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import EmailBodyEditor from "../email-body-editor";
 import { api } from "@/lib/axios";
-import { CustomerGetData } from "@/schemas/customers";
 import { Mail } from "lucide-react";
 import { ApiSuccessResponse } from "@/schemas/api";
 
@@ -56,14 +55,6 @@ export default function SendEmail({ template }: SendEmailProps) {
       return res.data as ApiSuccessResponse<CampaignGetData>;
     },
   });
-  const customersMutation = useMutation({
-    mutationFn: async (payload: { campaignId: string }) => {
-      const res = await api.get(apiEndpoints.customers.get, {
-        params: payload,
-      });
-      return res.data as CustomerGetData;
-    },
-  });
   const { items: campaigns = [] } = campaignsQuery.data?.result || {};
 
   return (
@@ -82,15 +73,7 @@ export default function SendEmail({ template }: SendEmailProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Campaign</FormLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    customersMutation.mutate({
-                      campaignId: value,
-                    });
-                  }}
-                >
+                <Select value={field.value} onValueChange={field.onChange}>
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a Campaign" />
@@ -111,10 +94,18 @@ export default function SendEmail({ template }: SendEmailProps) {
               </FormItem>
             )}
           />
-          <FormItem>
-            <FormLabel>Recipients</FormLabel>
-            <CustomersList data={customersMutation.data} />
-          </FormItem>
+          <FormField
+            control={form.control}
+            name="campaignId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Recipients</FormLabel>
+                <CustomersList
+                  data={campaigns.find((c) => c.id === field.value)?.customers}
+                />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="subject"
@@ -151,11 +142,16 @@ export default function SendEmail({ template }: SendEmailProps) {
   );
 }
 
-function CustomersList({ data }: { data?: CustomerGetData }) {
+function CustomersList({ data }: { data?: Campaign["customers"] }) {
   const renderContent = () => {
-    if (!data) return <div className="text-sm">No recipients</div>;
-    return data.result.items.map((customer) => (
-      <Badge key={customer.id} variant="secondary" className=" h-6 py-0">
+    if (!data)
+      return (
+        <div className="text-xs text-muted-foreground">
+          No recipients (Select a campaign)
+        </div>
+      );
+    return data.map((customer) => (
+      <Badge key={customer.email} variant="secondary" className=" h-6 py-0">
         {customer.email}
       </Badge>
     ));
