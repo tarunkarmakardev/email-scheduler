@@ -20,7 +20,7 @@ export default function CampaignCard({ campaign }: { campaign: Campaign }) {
       </CardHeader>
       <CardContent className="flex gap-2 flex-wrap">
         {campaign.customers.map((cust) => (
-          <Badge className="bg-secondary" key={cust.email}>
+          <Badge variant="secondary" key={cust.email}>
             {cust.email}
           </Badge>
         ))}
