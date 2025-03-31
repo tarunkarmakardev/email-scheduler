@@ -1,19 +1,35 @@
+import { appRoutes } from "@/config";
 import { Campaign } from "@/schemas/campaigns";
-import { Button, Card, CardHeader, CardTitle } from "@email-scheduler/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@email-scheduler/ui";
+import Link from "next/link";
 
 export default function CampaignCard({ campaign }: { campaign: Campaign }) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex justify-between items-center">
-          <CardTitle>{campaign.name}</CardTitle>
-          <div className="flex gap-2">
-            <Button variant="outline">Edit</Button>
-            <Button variant="destructive">Delete</Button>
-            <Button variant="outline">View Recipients</Button>
-          </div>
-        </div>
+        <CardTitle>{campaign.name}</CardTitle>
       </CardHeader>
+      <CardContent className="flex gap-2 flex-wrap">
+        {campaign.customers.map((cust) => (
+          <Badge className="bg-secondary" key={cust.email}>
+            {cust.email}
+          </Badge>
+        ))}
+      </CardContent>
+      <CardFooter className="flex gap-2">
+        <Link href={appRoutes.campaigns.edit(campaign.id)}>
+          <Button variant="outline">Edit</Button>
+        </Link>
+        <Button variant="destructive">Delete</Button>
+      </CardFooter>
     </Card>
   );
 }

@@ -4,8 +4,8 @@ import { CustomerCreatePayloadSchema } from "./customers";
 export const CampaignSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(3),
-  createdAt: z.date(),
-  updatedAt: z.date().optional(),
+  createdAt: z.string(),
+  updatedAt: z.string().optional(),
   userId: z.string(),
   customers: z.array(CustomerCreatePayloadSchema).min(3),
 });
