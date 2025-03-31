@@ -6,28 +6,27 @@ import { useMutation } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export function DeleteTemplateButton({ id }: { id: string }) {
+export default function DeleteCampaign({ id }: { id: string }) {
   const router = useRouter();
   const { toast } = useToast();
-  const templateDeleteMutation = useMutation({
-    mutationFn: () => api.delete(apiEndpoints.templates.delete(id)),
+  const deleteApi = useMutation({
+    mutationFn: () => api.delete(apiEndpoints.campaigns.delete(id)),
   });
   const handleDelete = () => {
-    templateDeleteMutation.mutate(undefined, {
+    deleteApi.mutate(undefined, {
       onSuccess: () => {
         toast({
-          title: "Template deleted",
+          title: "Campaign deleted",
         });
         router.refresh();
       },
     });
   };
-  const loading = templateDeleteMutation.isPending;
+  const loading = deleteApi.isPending;
   return (
     <div>
-      <Button variant="destructive" disabled={loading} onClick={handleDelete}>
-        {loading && <Loader2 className="animate-spin" />}
-        Delete
+      <Button variant="destructive" onClick={handleDelete}>
+        {loading && <Loader2 className="animate-spin" />}Delete
       </Button>
     </div>
   );

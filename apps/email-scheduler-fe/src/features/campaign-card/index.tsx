@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@email-scheduler/ui";
 import Link from "next/link";
+import DeleteCampaign from "../delete-campaign";
 
 export default function CampaignCard({ campaign }: { campaign: Campaign }) {
   return (
@@ -28,7 +29,7 @@ export default function CampaignCard({ campaign }: { campaign: Campaign }) {
         <Link href={appRoutes.campaigns.edit(campaign.id)}>
           <Button variant="outline">Edit</Button>
         </Link>
-        <Button variant="destructive">Delete</Button>
+        <DeleteCampaign id={campaign.id} />
       </CardFooter>
     </Card>
   );
