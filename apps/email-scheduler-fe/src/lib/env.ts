@@ -5,6 +5,8 @@ export const ServerEnvSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   DOMAIN: z.string(),
   SECRET: z.string(),
+  DATABASE_URL: z.string(),
+  DIRECT_URL: z.string(),
 });
 
 export const ClientEnvSchema = z.object({});
