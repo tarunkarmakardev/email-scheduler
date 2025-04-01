@@ -8,6 +8,7 @@ export const CustomerSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date().optional(),
   userId: z.string(),
+  variables: z.record(z.string()).optional(),
 });
 
 export const CustomerGetPayloadSchema = z.object({
@@ -28,6 +29,7 @@ export const CustomerCreatePayloadSchema = CustomerSchema.pick({
   firstName: true,
   lastName: true,
   email: true,
+  variables: true,
 });
 
 export const CustomerUpdatePayloadSchema = CustomerSchema.pick({

@@ -26,7 +26,10 @@ export const GET = createRouteHandler<GetPayload, GetData>(
         },
       },
     });
-    return new ApiResponse({ result: { items, total: items.length } });
+    return new ApiResponse({
+      items,
+      total: items.length,
+    } as unknown as GetData);
   }
 );
 
@@ -36,6 +39,6 @@ export const POST = createRouteHandler<PostPayload, PostData>(
     const customer = await db().customer.create({
       data: { ...data, userId },
     });
-    return new ApiResponse(customer);
+    return new ApiResponse(customer as unknown as PostData);
   }
 );

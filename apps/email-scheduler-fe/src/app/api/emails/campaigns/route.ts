@@ -33,17 +33,23 @@ export const GET = createRouteHandler<GetPayload, GetData>(
     return new ApiResponse({
       items,
       total: items.length,
-    });
+    } as unknown as GetData);
   }
 );
 
 export const POST = createRouteHandler<PostPayload, PostData>(
   async ({ payload, userId }) => {
-    const { customers, name } = payload;
-    await db().customer.createMany({
-      data: customers.map((c) => ({ ...c, userId })),
-      skipDuplicates: true,
-    });
+    const { customers, name, variables } = payload;
+    await db().$transaction(
+      customers.map((c) =>
+        db().customer.upsert({
+          create: { ...c, userId },
+          update: { ...c, userId },
+          where: { email: c.email },
+        })
+      )
+    );
+
     const customerItems = await db().customer.findMany({
       where: {
         email: {
@@ -55,15 +61,16 @@ export const POST = createRouteHandler<PostPayload, PostData>(
     const result = await db().campaign.create({
       data: {
         name,
+        variables,
         userId,
         customers: {
-          connect: customerItems,
+          connect: customerItems.map((c) => ({ id: c.id })),
         },
       },
       include: {
         customers: true,
       },
     });
-    return new ApiResponse(result);
+    return new ApiResponse(result as unknown as PostData);
   }
 );
