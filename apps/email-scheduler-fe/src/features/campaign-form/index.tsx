@@ -12,6 +12,8 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  Popover,
+  PopoverContent,
   Table,
   TableBody,
   TableCell,
@@ -20,8 +22,16 @@ import {
   TableRow,
 } from "@email-scheduler/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { Control, useFieldArray, useForm } from "react-hook-form";
+import { PopoverTrigger } from "@radix-ui/react-popover";
+import { CopyPlus, Loader2 } from "lucide-react";
+import { useState } from "react";
+import {
+  Control,
+  useController,
+  useFieldArray,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
 
 const defaultValues: CampaignFormValues = {
   name: "",
@@ -30,8 +40,10 @@ const defaultValues: CampaignFormValues = {
       email: "",
       firstName: "",
       lastName: "",
+      variables: {},
     },
   ],
+  variables: [],
 };
 
 type CampaignFormProps = {
@@ -47,7 +59,7 @@ export default function CampaignForm({
   submitButtonText = "Submit",
   loading,
 }: CampaignFormProps) {
-  const form = useForm({
+  const form = useForm<CampaignFormValues>({
     resolver: zodResolver(CampaignFormValuesSchema),
     defaultValues,
     values,
@@ -97,13 +109,17 @@ type EmailsTableProps = {
 };
 
 function EmailsTable({ control }: EmailsTableProps) {
+  const { field: variablesField } = useController({
+    control,
+    name: "variables",
+  });
   const { fields, remove, append } = useFieldArray({
     control,
     name: "customers",
   });
   const renderInput = (
     idx: number,
-    path: keyof CampaignFormValues["customers"][number],
+    path: "firstName" | "lastName" | "email",
     placeholder: string
   ) => {
     return (
@@ -131,6 +147,11 @@ function EmailsTable({ control }: EmailsTableProps) {
             <TableHead className="w-[200px]">Email Address</TableHead>
             <TableHead className="w-[200px]">First Name</TableHead>
             <TableHead className="w-[200px]">Last Name</TableHead>
+            {variablesField.value?.map((variable) => (
+              <TableHead className="w-[200px]" key={variable}>
+                {variable}
+              </TableHead>
+            ))}
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -146,6 +167,22 @@ function EmailsTable({ control }: EmailsTableProps) {
               <TableCell className="align-top">
                 {renderInput(idx, "lastName", "Last Name")}
               </TableCell>
+              {variablesField.value?.map((variable) => (
+                <TableCell key={variable} className="align-top">
+                  <FormField
+                    control={control}
+                    name={`customers.${idx}.variables.${variable}`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder={variable} {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </TableCell>
+              ))}
               <TableCell className="align-top">
                 <div className="flex items-center justify-end gap-2">
                   <div onClick={() => remove(idx)}>Remove</div>
@@ -155,7 +192,8 @@ function EmailsTable({ control }: EmailsTableProps) {
           ))}
         </TableBody>
       </Table>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <AddColumn control={control} />
         <Button
           variant="outline"
           onClick={() => append(defaultValues.customers[0])}
@@ -164,5 +202,49 @@ function EmailsTable({ control }: EmailsTableProps) {
         </Button>
       </div>
     </>
+  );
+}
+
+type AddColumnProps = {
+  control: Control<CampaignFormValues>;
+};
+
+function AddColumn({ control }: AddColumnProps) {
+  const [colName, setColName] = useState("");
+  const { setValue, getValues } = useFormContext<CampaignFormValues>();
+  const handleSubmit = () => {
+    const values = getValues();
+    const currentVariables = values.variables || [];
+    const currentCustomers = values.customers || [];
+    setValue("variables", [...currentVariables, colName]);
+    setValue(
+      "customers",
+      currentCustomers.map((customer) => ({
+        ...customer,
+        variables: {
+          ...customer.variables,
+          [colName]: "",
+        },
+      }))
+    );
+    setColName("");
+  };
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <CopyPlus />
+      </PopoverTrigger>
+      <PopoverContent>
+        <Input
+          placeholder="Column Name"
+          value={colName}
+          onChange={(e) => setColName(e.target.value)}
+          className="mb-4"
+        />
+        <Button variant="outline" onClick={handleSubmit}>
+          Add Column
+        </Button>
+      </PopoverContent>
+    </Popover>
   );
 }
