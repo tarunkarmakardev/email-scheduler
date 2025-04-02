@@ -19,23 +19,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@email-scheduler/ui";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import EmailBodyEditor from "../email-body-editor";
 import { api } from "@/lib/axios";
 import { Mail } from "lucide-react";
 import { ApiSuccessResponse } from "@/schemas/api";
+import { SendEmailFormValues } from "@/schemas/send-email";
 
 type SendEmailProps = {
   template: EmailTemplateDetailData;
 };
-type SendEmailFormValues = {
-  campaignId: string;
-  subject: string;
-  body: string;
-};
 
 export default function SendEmail({ template }: SendEmailProps) {
+  const postApi = useMutation({
+    mutationFn: async (data: SendEmailFormValues) => {
+      const res = await api.post(apiEndpoints.sendEmail, data);
+      return res.data;
+    },
+  });
+
   const form = useForm<SendEmailFormValues>({
     defaultValues: {
       subject: "",
@@ -63,7 +66,11 @@ export default function SendEmail({ template }: SendEmailProps) {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((values) => {
-            console.log(values);
+            postApi.mutate(values, {
+              onSuccess: (data) => {
+                console.log(data);
+              },
+            });
           })}
           className="space-y-8"
         >
