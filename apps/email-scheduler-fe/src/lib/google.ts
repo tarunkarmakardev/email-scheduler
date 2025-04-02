@@ -1,15 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 import { getEnv } from "@/lib/env";
 import { google, Auth } from "googleapis";
+import { db } from "./db";
 
 const env = getEnv();
 
-export function getGoogleAuthClient() {
-  return new google.auth.OAuth2({
+export async function getGoogleAuthClient(userId?: string) {
+  const client = new google.auth.OAuth2({
     clientId: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
     redirectUri: `${env.DOMAIN}/api/auth/google/callback`,
   });
+
+  if (userId && Object.keys(client.credentials).length === 0) {
+    const user = await db().user.findUnique({
+      where: { id: userId },
+    });
+    if (user) {
+      client.setCredentials(user.googleToken as any);
+    }
+  }
+  return client;
 }
 export const authUrlConfig = {
   access_type: "offline",
@@ -74,4 +86,18 @@ export async function getUserEmail(client: Auth.OAuth2Client, id: string) {
     body: string | null;
   };
   return message;
+}
+
+export async function sendGmailEmail({
+  client,
+  to,
+  subject,
+  body,
+}: {
+  client: Auth.OAuth2Client;
+  to: string;
+  subject: string;
+  body: string;
+}) {
+  return;
 }
