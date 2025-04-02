@@ -23,8 +23,6 @@ export const PATCH = createRouteHandler<PatchPayload, PatchData>(
       );
       return Promise.all(updates);
     });
-    console.log(_customers);
-
     const campaign = await db().campaign.update({
       where: { id, userId },
       data: {
