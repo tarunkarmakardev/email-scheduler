@@ -1,15 +1,32 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "server-only";
 import { getEnv } from "@/lib/env";
 import { google, Auth } from "googleapis";
+import { db } from "./db";
 
 const env = getEnv();
 
-export function getGoogleAuthClient() {
-  return new google.auth.OAuth2({
+export async function getGoogleAuthClient(userId?: string) {
+  const client = new google.auth.OAuth2({
     clientId: env.GOOGLE_CLIENT_ID,
     clientSecret: env.GOOGLE_CLIENT_SECRET,
     redirectUri: `${env.DOMAIN}/api/auth/google/callback`,
   });
+  if (userId) {
+    const user = await db().user.findUnique({ where: { id: userId } });
+    client.setCredentials(user?.googleToken as any);
+    client.on("tokens", (tokens) => {
+      db().user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          googleToken: tokens as any,
+        },
+      });
+    });
+  }
+  return client;
 }
 export const authUrlConfig = {
   access_type: "offline",

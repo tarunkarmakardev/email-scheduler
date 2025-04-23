@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { appRoutes } from "@/config";
 import { createSession } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -7,7 +8,7 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest) {
   const url = new URL(request.url);
-  const client = getGoogleAuthClient();
+  const client = await getGoogleAuthClient();
   const { tokens } = await client.getToken(
     url.searchParams.get("code") as string
   );
@@ -21,7 +22,16 @@ export async function GET(request: NextRequest) {
         firstName,
         lastName,
         picture,
-        googleToken: JSON.stringify(tokens),
+        googleToken: tokens as any,
+      },
+    });
+  } else {
+    user = await db().user.update({
+      where: {
+        email,
+      },
+      data: {
+        googleToken: tokens as any,
       },
     });
   }
