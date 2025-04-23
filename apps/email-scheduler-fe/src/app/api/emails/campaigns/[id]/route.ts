@@ -52,10 +52,13 @@ export const GET = createRouteHandler<DetailPayload, DetailData>(
   async ({ payload, userId }) => {
     const campaign = await db().campaign.findUnique({
       where: { id: payload.id, userId },
+      include: {
+        customers: true,
+      },
     });
     if (!campaign) {
       throw new ApiError("Campaign not found", 404);
     }
-    return new ApiResponse(campaign as unknown as DetailData);
+    return new ApiResponse(campaign as DetailData);
   }
 );

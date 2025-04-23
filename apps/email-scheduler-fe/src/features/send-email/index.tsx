@@ -3,7 +3,6 @@ import { apiEndpoints } from "@/config";
 import { CampaignGetData } from "@/schemas/campaigns";
 import { EmailTemplateDetailData } from "@/schemas/email-templates";
 import {
-  Badge,
   Button,
   Form,
   FormControl,
@@ -26,6 +25,7 @@ import { api } from "@/lib/axios";
 import { CustomerGetData } from "@/schemas/customers";
 import { Mail } from "lucide-react";
 import { ApiSuccessResponse } from "@/schemas/api";
+import CustomersList from "../customer-list";
 
 type SendEmailProps = {
   template: EmailTemplateDetailData;
@@ -113,7 +113,9 @@ export default function SendEmail({ template }: SendEmailProps) {
           />
           <FormItem>
             <FormLabel>Recipients</FormLabel>
-            <CustomersList data={customersMutation.data} />
+            <CustomersList
+              customers={customersMutation.data?.result.items || []}
+            />
           </FormItem>
           <FormField
             control={form.control}
@@ -147,22 +149,6 @@ export default function SendEmail({ template }: SendEmailProps) {
           </Button>
         </form>
       </Form>
-    </div>
-  );
-}
-
-function CustomersList({ data }: { data?: CustomerGetData }) {
-  const renderContent = () => {
-    if (!data) return <div className="text-sm">No recipients</div>;
-    return data.result.items.map((customer) => (
-      <Badge key={customer.id} variant="secondary" className=" h-6 py-0">
-        {customer.email}
-      </Badge>
-    ));
-  };
-  return (
-    <div className="flex items-center gap-2 flex-wrap max-h-32 overflow-auto">
-      {renderContent()}
     </div>
   );
 }

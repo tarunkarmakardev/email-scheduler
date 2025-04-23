@@ -30,6 +30,7 @@ import {
   useController,
   useFieldArray,
   useForm,
+  useFormContext,
 } from "react-hook-form";
 
 const defaultValues: CampaignFormValues = {
@@ -64,6 +65,8 @@ export default function CampaignForm({
     values,
     mode: "all",
   });
+
+  console.log(form.getValues());
 
   return (
     <Form {...form}>
@@ -192,7 +195,7 @@ function EmailsTable({ control }: EmailsTableProps) {
         </TableBody>
       </Table>
       <div className="flex justify-end gap-2">
-        <AddColumn control={control} />
+        <AddColumn />
         <Button
           variant="outline"
           onClick={() => append(defaultValues.customers[0])}
@@ -204,27 +207,18 @@ function EmailsTable({ control }: EmailsTableProps) {
   );
 }
 
-type AddColumnProps = {
-  control: Control<CampaignFormValues>;
-};
-
-function AddColumn({ control }: AddColumnProps) {
+function AddColumn() {
   const [colName, setColName] = useState("");
-  const { field: variablesField } = useController({
-    control,
-    name: "variables",
-  });
-  const { field: customersField } = useController({
-    control,
-    name: "customers",
-  });
+  const form = useFormContext<CampaignFormValues>();
   const handleSubmit = () => {
-    variablesField.onChange([...(variablesField.value || []), colName]);
-    customersField.onChange(
-      customersField.value.map((customer) => ({
-        ...customer,
+    const values = form.getValues();
+    form.setValue("variables", [...(values.variables || []), colName]);
+    form.setValue(
+      "customers",
+      values.customers.map((c) => ({
+        ...c,
         variables: {
-          ...customer.variables,
+          ...c.variables,
           [colName]: "",
         },
       }))
