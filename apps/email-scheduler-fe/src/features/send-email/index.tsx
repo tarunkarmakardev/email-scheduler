@@ -19,11 +19,11 @@ import {
   SelectValue,
 } from "@email-scheduler/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { Control, useForm, useFormContext } from "react-hook-form";
 import EmailBodyEditor from "../email-body-editor";
 import { api } from "@/lib/axios";
 import { CustomerGetData } from "@/schemas/customers";
-import { Mail } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { ApiSuccessResponse } from "@/schemas/api";
 import CustomersList from "../customer-list";
 
@@ -49,73 +49,26 @@ export default function SendEmail({ template }: SendEmailProps) {
       subject: template.subject,
     },
   });
-  const campaignsQuery = useQuery({
-    queryKey: [apiEndpoints.campaigns],
-    queryFn: async () => {
-      const res = await api.get(apiEndpoints.campaigns.get);
-      return res.data as ApiSuccessResponse<CampaignGetData>;
+  const postMutation = useMutation({
+    mutationFn: async (values: SendEmailFormValues) => {
+      const res = await api.post(apiEndpoints.sendEmail, values);
+      return res.data as ApiSuccessResponse<unknown>;
     },
   });
-  const customersMutation = useMutation({
-    mutationFn: async (payload: { campaignId: string }) => {
-      const res = await api.get(apiEndpoints.customers.get, {
-        params: payload,
-      });
-      return res.data as CustomerGetData;
-    },
-  });
-  const { items: campaigns = [] } = campaignsQuery.data?.result || {};
+
+  const handleSubmit = (values: SendEmailFormValues) => {
+    postMutation.mutate(values);
+  };
 
   return (
     <div className="w-[500px] py-4">
       <h1 className="capitalize mb-6">Template: {template.name}</h1>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit((values) => {
-            console.log(values);
-          })}
-          className="space-y-8"
-        >
-          <FormField
-            control={form.control}
-            name="campaignId"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Campaign</FormLabel>
-                <Select
-                  value={field.value}
-                  onValueChange={(value) => {
-                    field.onChange(value);
-                    customersMutation.mutate({
-                      campaignId: value,
-                    });
-                  }}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a Campaign" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {campaigns.map((campaign) => (
-                      <SelectItem key={campaign.id} value={campaign.id}>
-                        {campaign.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormDescription>
-                  Populate recipients by selecting a campaign{" "}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8">
+          <SelectCampaign control={form.control} />
           <FormItem>
             <FormLabel>Recipients</FormLabel>
-            <CustomersList
-              customers={customersMutation.data?.result.items || []}
-            />
+            <Customers />
           </FormItem>
           <FormField
             control={form.control}
@@ -144,11 +97,84 @@ export default function SendEmail({ template }: SendEmailProps) {
             )}
           />
           <Button type="submit" disabled={!form.formState.isValid}>
-            <Mail />
+            {postMutation.isPending ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <Mail />
+            )}
             Send
           </Button>
         </form>
       </Form>
     </div>
+  );
+}
+
+type SelectCampaignProps = {
+  control: Control<SendEmailFormValues>;
+};
+
+function SelectCampaign({ control }: SelectCampaignProps) {
+  const campaignsQuery = useQuery({
+    queryKey: [apiEndpoints.campaigns],
+    queryFn: async () => {
+      const res = await api.get(apiEndpoints.campaigns.get);
+      return res.data as ApiSuccessResponse<CampaignGetData>;
+    },
+  });
+  const { items: campaigns = [] } = campaignsQuery.data?.result || {};
+
+  return (
+    <FormField
+      control={control}
+      name="campaignId"
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>Campaign</FormLabel>
+          <Select value={field.value} onValueChange={field.onChange}>
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a Campaign" />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent>
+              {campaigns.map((campaign) => (
+                <SelectItem key={campaign.id} value={campaign.id}>
+                  {campaign.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormDescription>
+            Populate recipients by selecting a campaign{" "}
+          </FormDescription>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+}
+
+function Customers() {
+  const form = useFormContext<SendEmailFormValues>();
+  const campaignId = form.watch("campaignId");
+  const payload = { campaignId };
+
+  const query = useQuery({
+    queryKey: [apiEndpoints.customers.get, payload],
+    queryFn: async () => {
+      const res = await api.get(apiEndpoints.customers.get, {
+        params: payload,
+      });
+      return res.data as ApiSuccessResponse<CustomerGetData>;
+    },
+    enabled: !!campaignId,
+  });
+  const { items: customers = [] } = query.data?.result || {};
+  return (
+    <FormItem>
+      <FormLabel>Recipients</FormLabel>
+      <CustomersList customers={customers} />
+    </FormItem>
   );
 }

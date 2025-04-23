@@ -27,12 +27,11 @@ export const GET = createRouteHandler<GetPayload, GetData>(
 );
 
 export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
-  async ({ payload, userId }) => {
+  async ({ payload }) => {
     const { id } = DeletePayloadSchema.parse(payload);
     const template = await db().emailTemplate.delete({
       where: {
         id,
-        userId,
       },
     });
     return new ApiResponse(template);
@@ -40,13 +39,13 @@ export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
 );
 
 export const PATCH = createRouteHandler<PatchPayload, PatchData>(
-  async ({ payload, userId }) => {
-    const validatedData = PatchPayloadSchema.parse(payload);
-    const result = await db().emailTemplate.delete({
+  async ({ payload }) => {
+    const { id, ...data } = PatchPayloadSchema.parse(payload);
+    const result = await db().emailTemplate.update({
       where: {
-        id: validatedData.id,
-        userId,
+        id,
       },
+      data,
     });
     return new ApiResponse(result);
   }

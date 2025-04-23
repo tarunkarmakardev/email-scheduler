@@ -21,6 +21,7 @@ export const apiEndpoints = {
     delete: (id: string) => `/api/emails/customers/${id}`,
     patch: (id: string) => `/api/emails/customers/${id}`,
   },
+  sendEmail: "/api/emails/send",
   userMe: "/api/users/me",
 };
 export const appRoutes = {
