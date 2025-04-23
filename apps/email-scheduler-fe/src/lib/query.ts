@@ -23,7 +23,7 @@ export async function query<T = unknown>(
     pathParams = {},
   } = options ?? {};
   try {
-    const token = await cookies().get("token")?.value;
+    const token = (await cookies()).get("token")?.value;
     const urlInstance = new URL(url, env.DOMAIN);
     Object.entries(pathParams).forEach(([key, value]) => {
       urlInstance.pathname = urlInstance.pathname.replace(`:${key}`, value);

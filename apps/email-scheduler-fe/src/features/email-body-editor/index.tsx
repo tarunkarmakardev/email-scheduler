@@ -1,6 +1,8 @@
-import ReactQuill from "react-quill";
 import "./index.css";
-import "react-quill/dist/quill.snow.css";
+import "react-quill-new/dist/quill.snow.css";
+import dynamic from "next/dynamic";
+
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
 type EmailBodyEditorProps = {
   value: string;

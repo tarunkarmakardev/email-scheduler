@@ -33,9 +33,9 @@ export default function TemplateCard({
           <p className="font-semibold">Subject:</p>
           <p>{subject}</p>
         </div>
-        <p className="h-[140px]">
+        <div className="h-[140px]">
           <EmailBodyPreview content={body} />
-        </p>
+        </div>
       </CardContent>
       <CardFooter className="flex gap-2">
         <SendEmailButton id={id} />
