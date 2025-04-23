@@ -13,9 +13,9 @@ import {
 export const GET = createRouteHandler<DetailPayload, DetailData>(
   async ({ payload }) => {
     const { id } = payload;
-    const customer = await db().customer.findUnique({
+    const customer = (await db().customer.findUnique({
       where: { id },
-    });
+    })) as DetailData;
     if (!customer) {
       throw new ApiError("Customer not found", 404);
     }
@@ -26,10 +26,10 @@ export const GET = createRouteHandler<DetailPayload, DetailData>(
 export const PATCH = createRouteHandler<PatchPayload, PatchData>(
   async ({ payload }) => {
     const { id, ...data } = PatchPayloadSchema.parse(payload);
-    const customer = await db().customer.update({
+    const customer = (await db().customer.update({
       where: { id },
       data,
-    });
+    })) as PatchData;
     return new ApiResponse(customer);
   }
 );
@@ -37,9 +37,9 @@ export const PATCH = createRouteHandler<PatchPayload, PatchData>(
 export const DELETE = createRouteHandler<DeletePayload, DeleteData>(
   async ({ payload }) => {
     const { id } = payload;
-    const customer = await db().customer.delete({
+    const customer = (await db().customer.delete({
       where: { id },
-    });
+    })) as DeleteData;
     return new ApiResponse(customer);
   }
 );

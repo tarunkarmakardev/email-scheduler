@@ -40,6 +40,7 @@ model Campaign {
   userId    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  variables String[]
 }
 
 model Customer {
@@ -52,4 +53,5 @@ model Customer {
   userId    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  variables Json?
 }
